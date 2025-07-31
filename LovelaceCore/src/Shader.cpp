@@ -1,0 +1,111 @@
+#include "Shader.hpp"
+#include "Logger.hpp"
+#include <iostream>
+#include <fstream>
+
+Shader::Shader() : m_rendererId(glCreateProgram())
+{
+}
+
+void Shader::Initialize(uint32_t shaderType, const std::string& source, uint32_t shaderType2, const std::string& source2)
+{
+	uint32_t shader1 = glCreateShader(shaderType);
+	uint32_t shader2 = glCreateShader(shaderType2);
+
+	std::string out;
+	ReadFile(source, out);
+
+	const char* p =  out.c_str();
+
+	int length = (int)strlen(out.c_str());
+
+	glShaderSource(shader1, 1, &p, &length);
+	glCompileShader(shader1);
+
+	int result = 0;
+	glGetShaderiv(shader1, GL_COMPILE_STATUS, &result);
+	if (!result)
+	{
+		int length;
+		glGetShaderiv(shader1, GL_INFO_LOG_LENGTH, &length);
+		char* message = (char*)malloc(length * sizeof(char));
+		glGetShaderInfoLog(shader1, length, &length, message);
+		Logger::Log(ERROR, message != 0 ? message : "0");
+		glDeleteShader(shader1);
+		free(message);
+	}
+
+	out = "";
+	ReadFile(source2, out);
+
+	const char* p2 = out.c_str();
+
+	length = (int)strlen(out.c_str());
+
+	glShaderSource(shader2, 1, &p2, &length);
+	glCompileShader(shader2);
+
+	result = 0;
+	glGetShaderiv(shader2, GL_COMPILE_STATUS, &result);
+	if (!result)
+	{
+		int length;
+		glGetShaderiv(shader2, GL_INFO_LOG_LENGTH, &length);
+		char* message = (char*)malloc(length * sizeof(char));
+		glGetShaderInfoLog(shader2, length, &length, message);
+		Logger::Log(ERROR, message != 0 ? message : "0");
+		glDeleteShader(shader2);
+		free(message);
+	}
+
+	glAttachShader(m_rendererId, shader1);
+	glAttachShader(m_rendererId, shader2);
+	glLinkProgram(m_rendererId);
+
+	glDeleteShader(shader1);
+	glDeleteShader(shader2);
+}
+
+void Shader::Unbind() const
+{
+	glUseProgram(0);
+}
+
+void Shader::Bind() const
+{
+	glUseProgram(m_rendererId);
+}
+
+void Shader::SetUniform4f( const std::string& name, float x, float y, float z, float w) const
+{
+	glUniform4f(GetUniformLocation(name), x, y, z, w);
+}
+
+void Shader::SetUniformMat4f(const std::string& name, const glm::mat4& mat) const
+{
+	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &mat[0][0]);
+}
+
+int Shader::GetUniformLocation(const std::string& name) const
+{
+	return glGetUniformLocation(m_rendererId, name.c_str());
+}
+
+bool Shader::ReadFile(const std::string& source, std::string& out)
+{
+	std::ifstream shaderSource(source);
+	if (shaderSource.is_open())
+	{
+		std::string line;
+		while (getline(shaderSource, line))
+		{
+			out.append(line);
+			out.append("\n");
+		}
+
+		shaderSource.close();
+	}
+	else return false;
+
+	return true;
+}
