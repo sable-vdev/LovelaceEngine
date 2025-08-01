@@ -1,24 +1,11 @@
 #include <iostream>
-#include "src/Window.hpp"
-#include "dependencies/include/glm/glm.hpp"
-#include "dependencies/include/glm/gtc/matrix_transform.hpp"
+#include "src/Camera.hpp"
 #include "src/Renderer.hpp"
 #include "core/Vertex.h"
 
 int main()
 {
     Window window;
-
-    float vectors[] = {
-        -1.0f, -1.0f, 1.0f, 137 /256.0f, 207 / 256.0f, 240 / 256.0f,
-        1.0f, -1.0f, 1.0f, 200 / 256.0f, 256 / 256.0f, 2 / 256.0f,
-        1.0f, 1.0f, 1.0f, 137 / 256.0f, 207 / 256.0f, 240 / 256.0f,
-        -1.0f, 1.0f, 1.0f, 200 / 256.0f, 256 / 256.0f, 2 / 256.0f,
-        1.0f, -1.0f, -1.0f, 137 / 256.0f, 207 / 256.0f, 240 / 256.0f,
-        1.0f, 1.0f, -1.0f, 200 / 256.0f, 256 / 256.0f, 2 / 256.0f,
-        -1.0f, -1.0f, -1.0f, 137 / 256.0f, 207 / 256.0f, 240 / 256.0f,
-        -1.0f, 1.0f, -1.0f, 200 / 256.0f, 256 / 256.0f, 1 / 256.0f,
-    };
 
     Vertex vertices[] = {
         Vertex(-1.0f, -1.0f, 1.0f, 137, 207, 240),
@@ -74,10 +61,8 @@ int main()
     glm::vec3 scale(1.0f, 1.0f, 1.0f);
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), window.GetWidth() / window.GetHeight(), 0.1f, 10000.0f);
 
-    glm::vec3 cameraPos(0.0f, 0.0f, -5.0f);
-    glm::vec3 cameraRot(0.0f, 0.0f, 0.0f);
-    glm::mat4 view = glm::translate(glm::mat4(1.0f), cameraPos);
-    Logger::Log(INFO, std::format("Hallo Welt! {}", cameraPos.x));
+    Camera cam;
+    cam.viewMatrix = glm::mat4(1.0f);
     while (window.Run())
     {
         glm::mat4 model(1.0f);
@@ -87,33 +72,12 @@ int main()
             glm::rotate(model, glm::radians(rotDegrees.z), glm::vec3(1.0f, 0.0f, 0.0f)) * 
             glm::scale(model, scale);
 
-        //view = glm::lookAt(cameraPos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        view = glm::translate(glm::mat4(1.0f), cameraPos);
+        cam.UpdateCamera(&window);
 
-        glm::mat4 mvpMat = projection * view * model;
+        glm::mat4 mvpMat = projection * cam.viewMatrix * model;
 
         renderer->Draw(va, ibo, shader);
         shader.SetUniformMat4f("trans", mvpMat);
-        
-        if (window.GetKeyDown(GLFW_MOUSE_BUTTON_RIGHT))
-        {
-            if (window.GetKeyDown(GLFW_KEY_A))
-            {
-                cameraPos.x += 15.0f * window.GetDeltaTime();
-            }
-            if (window.GetKeyDown(GLFW_KEY_D))
-            {
-                cameraPos.x -= 15.0f * window.GetDeltaTime();
-            }
-            if (window.GetKeyDown(GLFW_KEY_W))
-            {
-                cameraPos.z += 15.0f * window.GetDeltaTime();
-            }
-            if (window.GetKeyDown(GLFW_KEY_S))
-            {
-                cameraPos.z -= 15.0f * window.GetDeltaTime();
-            }
-        }
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -125,10 +89,6 @@ int main()
         ImGui::DragFloat3("Position", &translation.x, 0.1f);
         ImGui::DragFloat3("Rotation", &rotDegrees.x, 0.1f);
         ImGui::DragFloat3("Scale", &scale.x, 0.1f);
-        ImGui::End();
-        ImGui::Begin("Camera");
-        ImGui::DragFloat3("Position", &cameraPos.x, 0.1f, 20000.0f, -20000.0f);
-        ImGui::DragFloat3("Rotation", &cameraRot.x, 0.1f);
         ImGui::End();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
