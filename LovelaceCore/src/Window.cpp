@@ -97,6 +97,11 @@ bool Window::GetKeyDown(int keyCode)
     return glfwGetKey(m_window, keyCode) == GLFW_PRESS;
 }
 
+void Window::SetMouseVisibility(int command)
+{
+    glfwSetInputMode(m_window, GLFW_CURSOR, command);
+}
+
 bool Window::Run()
 {
     

@@ -26,6 +26,7 @@ public:
 	void SwapBuffers();
 	bool Timer();
 	bool GetKeyDown(int keyCode);
+	void SetMouseVisibility(int command);
 	inline float GetDeltaTime() const { return m_deltaTime; };
 	inline float GetApplicationRunTime() const { return m_applicationRunTime; };
 	inline float GetWidth() const { return (float)m_width; }

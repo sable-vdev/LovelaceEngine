@@ -59,25 +59,22 @@ int main()
     glm::vec3 translation(0.0f, 0.0f, 0.0f);
     glm::vec3 rotDegrees(0.0f, 0.0f, 0.0f);
     glm::vec3 scale(1.0f, 1.0f, 1.0f);
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), window.GetWidth() / window.GetHeight(), 0.1f, 10000.0f);
 
     Camera cam;
-    cam.viewMatrix = glm::mat4(1.0f);
+
     while (window.Run())
     {
         glm::mat4 model(1.0f);
-        model = glm::translate(model, translation) * 
-            glm::rotate(model, glm::radians(rotDegrees.y), glm::vec3(0.0f, 1.0f, 0.0f)) *
+        model = glm::translate(model, translation) *
+            glm::rotate(model, glm::radians(rotDegrees.y) , glm::vec3(0.0f, 1.0f, 0.0f)) *
             glm::rotate(model, glm::radians(rotDegrees.x), glm::vec3(0.0f, 0.0f, 1.0f)) *
             glm::rotate(model, glm::radians(rotDegrees.z), glm::vec3(1.0f, 0.0f, 0.0f)) * 
             glm::scale(model, scale);
 
         cam.UpdateCamera(&window);
-
-        glm::mat4 mvpMat = projection * cam.viewMatrix * model;
-
         renderer->Draw(va, ibo, shader);
-        shader.SetUniformMat4f("trans", mvpMat);
+        shader.SetUniformMat4f("model", model);
+        shader.SetUniformMat4f("camera", cam.GetMatrix());
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
