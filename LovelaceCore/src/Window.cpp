@@ -77,14 +77,12 @@ bool Window::Initialize()
     return true;
 }
 
-bool Window::Timer()
+void Window::Timer()
 {
     float currentTime = (float)glfwGetTime();
     m_deltaTime = currentTime - m_lastTime;
 
     m_lastTime = currentTime;
-
-    return false;
 }
 
 bool Window::GetKeyDown(int keyCode)

@@ -20,11 +20,11 @@ private:
 	float m_applicationRunTime;
 public:
 	Window();
-	Window(int32_t widht, int32_t height, const char* title, bool vsync);
+	Window(int32_t width, int32_t height, const char* title, bool vsync);
 	bool Run();
 	void Destroy();
 	void SwapBuffers();
-	bool Timer();
+	void Timer();
 	bool GetKeyDown(int keyCode);
 	void SetMouseVisibility(int command);
 	inline float GetDeltaTime() const { return m_deltaTime; };
@@ -33,7 +33,6 @@ public:
 	inline float GetHeight() const { return (float)m_height; }
 private:
 	bool Initialize();
-
 	static inline void FrameBufferSizeCallback(GLFWwindow* window, int32_t width, int32_t height)
 	{
 		Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));

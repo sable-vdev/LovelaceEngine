@@ -6,16 +6,17 @@
 int main()
 {
     Window window;
+    glm::vec3 objColor(1.0f);
 
     Vertex vertices[] = {
-        Vertex(-1.0f, -1.0f, 1.0f, 137, 207, 240),
-        Vertex(1.0f, -1.0f, 1.0f, 200, 255, 2),
-        Vertex(1.0f, 1.0f, 1.0f, 137, 207, 240),
-        Vertex(-1.0f, 1.0f, 1.0f, 200, 255, 2),
-        Vertex(1.0f, -1.0f, -1.0f, 137, 207, 240),
-        Vertex(1.0f, 1.0f, -1.0f, 200, 255, 2),
-        Vertex(-1.0f, -1.0f, -1.0f, 137, 207, 240),
-        Vertex(-1.0f, 1.0f, -1.0f, 200, 255, 1)
+        Vertex(-1.0f, -1.0f, 1.0f),
+        Vertex(1.0f, -1.0f, 1.0f),
+        Vertex(1.0f, 1.0f, 1.0f),
+        Vertex(-1.0f, 1.0f, 1.0f),
+        Vertex(1.0f, -1.0f, -1.0f),
+        Vertex(1.0f, 1.0f, -1.0f),
+        Vertex(-1.0f, -1.0f, -1.0f),
+        Vertex(-1.0f, 1.0f, -1.0f)
     };
 
     unsigned int ibod[] = { 
@@ -55,7 +56,7 @@ int main()
     va.Unbind();
     ibo.Unbind();
 
-    Renderer* renderer{};
+    std::unique_ptr<Renderer> renderer{std::make_unique<Renderer>()};
     glm::vec3 translation(0.0f, 0.0f, 0.0f);
     glm::vec3 rotDegrees(0.0f, 0.0f, 0.0f);
     glm::vec3 scale(1.0f, 1.0f, 1.0f);
@@ -70,11 +71,17 @@ int main()
             glm::rotate(model, glm::radians(rotDegrees.x), glm::vec3(0.0f, 0.0f, 1.0f)) *
             glm::rotate(model, glm::radians(rotDegrees.z), glm::vec3(1.0f, 0.0f, 0.0f)) * 
             glm::scale(model, scale);
+       
+        rotDegrees.y += 60.0f * window.GetDeltaTime();
+        if (rotDegrees.y >= 360.0f) rotDegrees.y = 0.0f;
+
 
         cam.UpdateCamera(&window);
         renderer->Draw(va, ibo, shader);
         shader.SetUniformMat4f("model", model);
         shader.SetUniformMat4f("camera", cam.GetMatrix());
+        shader.SetUniform3f("color", objColor.x, objColor.y, objColor.z);
+        renderer->Unbind(va, ibo, shader);
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -86,17 +93,15 @@ int main()
         ImGui::DragFloat3("Position", &translation.x, 0.1f);
         ImGui::DragFloat3("Rotation", &rotDegrees.x, 0.1f);
         ImGui::DragFloat3("Scale", &scale.x, 0.1f);
+        ImGui::ColorEdit3("Color", &objColor.x);
         ImGui::End();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        
-        shader.Unbind();
-        va.Unbind();
-        ibo.Unbind();
-        window.SwapBuffers();
 
+        //Logger::Log(DEBUG, std::format("{}"));
+
+        window.SwapBuffers();
     }
-    delete renderer;
 
     window.Destroy();
     return 0;
