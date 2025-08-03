@@ -1,6 +1,7 @@
 #pragma once
 #include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
+#include "glm/glm.hpp"
 #include <iostream>
 #include "Logger.hpp"
 #include "imgui/imgui.h"
@@ -31,6 +32,15 @@ public:
 	inline float GetApplicationRunTime() const { return m_applicationRunTime; };
 	inline float GetWidth() const { return (float)m_width; }
 	inline float GetHeight() const { return (float)m_height; }
+	inline glm::vec2 GetMousePos()
+	{
+		glm::vec2 mousePos(0.0f);
+		double x, y;
+		glfwGetCursorPos(m_window, &x, &y);
+		mousePos.x = static_cast<float>(x);
+		mousePos.y = static_cast<float>(y);
+		return mousePos;
+	}
 private:
 	bool Initialize();
 	static inline void FrameBufferSizeCallback(GLFWwindow* window, int32_t width, int32_t height)

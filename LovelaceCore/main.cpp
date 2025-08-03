@@ -1,7 +1,7 @@
 #include <iostream>
 #include "src/Camera.hpp"
 #include "src/Renderer.hpp"
-#include "core/Vertex.h"
+#include "core/Vertex.hpp"
 
 int main()
 {
@@ -44,7 +44,6 @@ int main()
     VAO va;
     VertexBufferLayout vbl;
     vbl.Push<float>(3);
-    vbl.Push<float>(3);
     va.AddBuffer(vb, vbl);
 
     Shader shader;
@@ -67,8 +66,8 @@ int main()
     {
         glm::mat4 model(1.0f);
         model = glm::translate(model, translation) *
-            glm::rotate(model, glm::radians(rotDegrees.y) , glm::vec3(0.0f, 1.0f, 0.0f)) *
             glm::rotate(model, glm::radians(rotDegrees.x), glm::vec3(0.0f, 0.0f, 1.0f)) *
+            glm::rotate(model, glm::radians(rotDegrees.y) , glm::vec3(0.0f, 1.0f, 0.0f)) *
             glm::rotate(model, glm::radians(rotDegrees.z), glm::vec3(1.0f, 0.0f, 0.0f)) * 
             glm::scale(model, scale);
        
@@ -76,7 +75,7 @@ int main()
         if (rotDegrees.y >= 360.0f) rotDegrees.y = 0.0f;
 
 
-        cam.UpdateCamera(&window);
+        cam.UpdateCamera(window);
         renderer->Draw(va, ibo, shader);
         shader.SetUniformMat4f("model", model);
         shader.SetUniformMat4f("camera", cam.GetMatrix());
@@ -94,6 +93,7 @@ int main()
         ImGui::DragFloat3("Rotation", &rotDegrees.x, 0.1f);
         ImGui::DragFloat3("Scale", &scale.x, 0.1f);
         ImGui::ColorEdit3("Color", &objColor.x);
+        ImGui::DragFloat3("Rot", &cam.m_rotation.x, 0.1f);
         ImGui::End();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
