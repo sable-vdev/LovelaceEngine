@@ -1,5 +1,5 @@
 #pragma once
-#include "GLEW/glew.h"
+#include <GLAD/glad.h>
 #include "Logger.hpp"
 
 class Buffer

@@ -1,7 +1,7 @@
 #include "Window.hpp"
 
 Window::Window()
-    : m_window(nullptr), m_width(1280), m_height(720), m_title("Lovelace Render Engine"), m_vsync(false)
+    : m_window(nullptr), m_width(1280), m_height(720), m_title("Lovelace Render Engine"), m_vsync(true)
 {
     if (!Initialize())
     {
@@ -10,6 +10,7 @@ Window::Window()
         m_lastTime = (float)glfwGetTime();
     }
     Logger::Log(INFO, "Window created.");
+
 }
 
 Window::Window(int32_t width, int32_t height, const char* title, bool vsync)
@@ -36,7 +37,7 @@ bool Window::Initialize()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 
-    m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
+    m_window = glfwCreateWindow(m_width, m_height, m_title, nullptr, nullptr);
     
     if (!m_window)
     {
@@ -51,19 +52,27 @@ bool Window::Initialize()
     glfwMakeContextCurrent(m_window);
     glfwSetWindowUserPointer(m_window, this);
     glfwSetFramebufferSizeCallback(m_window, FrameBufferSizeCallback);
-
+    
+    /*
     if (glewInit() != GLEW_OK)
     {
         Logger::Log(ERROR, "Failed to initialize GLEW");
         return false;
     }
+    */
+
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+        return -1;
+    }
 
     if (m_vsync) glfwSwapInterval(1);
     else glfwSwapInterval(0);
 
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
+    //glEnable(GL_CULL_FACE);
+    //glCullFace(GL_BACK);
+    //glFrontFace(GL_CCW);
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -85,24 +94,8 @@ void Window::Timer()
     m_lastTime = currentTime;
 }
 
-bool Window::GetKeyDown(int keyCode)
-{
-    if (keyCode == GLFW_MOUSE_BUTTON_RIGHT || keyCode == GLFW_MOUSE_BUTTON_LEFT)
-    {
-        return glfwGetMouseButton(m_window, keyCode);
-    }
-    //Logger::Log(DEBUG, std::to_string(glfwGetKey(m_window, keyCode) == GLFW_PRESS));
-    return glfwGetKey(m_window, keyCode) == GLFW_PRESS;
-}
-
-void Window::SetMouseVisibility(int command)
-{
-    glfwSetInputMode(m_window, GLFW_CURSOR, command);
-}
-
 bool Window::Run()
 {
-    
     if (glfwWindowShouldClose(m_window)) return false;
     
     glViewport(0, 0, m_width, m_height);

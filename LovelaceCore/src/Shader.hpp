@@ -1,7 +1,7 @@
 #pragma once
 #include <inttypes.h>
 #include <string>
-#include <GLEW/glew.h>
+#include <GLAD/glad.h>
 #include "glm/glm.hpp"
 
 class Shader

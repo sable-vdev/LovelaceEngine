@@ -1,25 +1,25 @@
 #include <iostream>
 #include "src/Camera.hpp"
 #include "src/Renderer.hpp"
-#include "core/Vertex.hpp"
+#include "math/Vector.hpp"
 
 int main()
 {
     Window window;
     glm::vec3 objColor(1.0f);
 
-    Vertex vertices[] = {
-        Vertex(-1.0f, -1.0f, 1.0f),
-        Vertex(1.0f, -1.0f, 1.0f),
-        Vertex(1.0f, 1.0f, 1.0f),
-        Vertex(-1.0f, 1.0f, 1.0f),
-        Vertex(1.0f, -1.0f, -1.0f),
-        Vertex(1.0f, 1.0f, -1.0f),
-        Vertex(-1.0f, -1.0f, -1.0f),
-        Vertex(-1.0f, 1.0f, -1.0f)
+    glm::vec3 vertices[] = {
+        glm::vec3(-1.0f, -1.0f, 1.0f),
+        glm::vec3(1.0f, -1.0f, 1.0f),
+        glm::vec3(1.0f, 1.0f, 1.0f),
+        glm::vec3(-1.0f, 1.0f, 1.0f),
+        glm::vec3(1.0f, -1.0f, -1.0f),
+        glm::vec3(1.0f, 1.0f, -1.0f),
+        glm::vec3(-1.0f, -1.0f, -1.0f),
+        glm::vec3(-1.0f, 1.0f, -1.0f)
     };
 
-    unsigned int ibod[] = { 
+    unsigned int ibod[] = {
         0, 1, 2,
         2, 3, 0,
 
@@ -55,27 +55,27 @@ int main()
     va.Unbind();
     ibo.Unbind();
 
-    std::unique_ptr<Renderer> renderer{std::make_unique<Renderer>()};
-    glm::vec3 translation(0.0f, 0.0f, 0.0f);
-    glm::vec3 rotDegrees(0.0f, 0.0f, 0.0f);
-    glm::vec3 scale(1.0f, 1.0f, 1.0f);
+    std::unique_ptr<Renderer> renderer = std::make_unique<Renderer>();
+    glm::vec3 translation(0.0f);
+    glm::vec3 rotDegrees(0.0f);
+    glm::vec3 scale(1.0f);
 
-    Camera cam;
+    Camera cam(window.GetWidth(), window.GetHeight());
+    Input input(window.GetWindow());
 
     while (window.Run())
     {
         glm::mat4 model(1.0f);
         model = glm::translate(model, translation) *
-            glm::rotate(model, glm::radians(rotDegrees.x), glm::vec3(0.0f, 0.0f, 1.0f)) *
+            glm::rotate(model, glm::radians(rotDegrees.z), glm::vec3(0.0f, 0.0f, 1.0f)) * 
             glm::rotate(model, glm::radians(rotDegrees.y) , glm::vec3(0.0f, 1.0f, 0.0f)) *
-            glm::rotate(model, glm::radians(rotDegrees.z), glm::vec3(1.0f, 0.0f, 0.0f)) * 
+            glm::rotate(model, glm::radians(rotDegrees.x), glm::vec3(1.0f, 0.0f, 0.0f)) *
             glm::scale(model, scale);
        
         rotDegrees.y += 60.0f * window.GetDeltaTime();
         if (rotDegrees.y >= 360.0f) rotDegrees.y = 0.0f;
 
-
-        cam.UpdateCamera(window);
+        cam.UpdateCamera(input, window);
         renderer->Draw(va, ibo, shader);
         shader.SetUniformMat4f("model", model);
         shader.SetUniformMat4f("camera", cam.GetMatrix());
@@ -85,20 +85,19 @@ int main()
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+        ImGui::Begin("App");
         ImGui::Text("Application average %.3f ms/frame (%.2f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         ImGui::Text("Delta time %.10f", window.GetDeltaTime());
         ImGui::Text("Application running for %.1f", window.GetApplicationRunTime());
+        ImGui::End();
         ImGui::Begin("Cube");
         ImGui::DragFloat3("Position", &translation.x, 0.1f);
         ImGui::DragFloat3("Rotation", &rotDegrees.x, 0.1f);
         ImGui::DragFloat3("Scale", &scale.x, 0.1f);
-        ImGui::ColorEdit3("Color", &objColor.x);
-        ImGui::DragFloat3("Rot", &cam.m_rotation.x, 0.1f);
+        ImGui::ColorEdit4("Color", &objColor.x);
         ImGui::End();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        //Logger::Log(DEBUG, std::format("{}"));
 
         window.SwapBuffers();
     }

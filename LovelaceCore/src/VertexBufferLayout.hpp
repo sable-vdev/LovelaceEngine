@@ -2,7 +2,7 @@
 #include "Logger.hpp"
 #include <inttypes.h>
 #include <vector>
-#include <GLEW/glew.h>
+#include <GLAD/glad.h>
 
 struct VertexBufferElement
 {

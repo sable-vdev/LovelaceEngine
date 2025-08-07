@@ -1,21 +1,18 @@
 #include "../include/glm/glm.hpp"
 #include "../include/glm/gtc/matrix_transform.hpp"
-#include <algorithm>
-#include "Window.hpp"
+#include "Input.hpp"
 
 class Camera
 {
 public:
-	Camera();
-	Camera(float degrees, float aspect, float near, float far);
-	void UpdateCamera(Window& window);
+	Camera(float width, float height);
+	void UpdateCamera(Input& input, Window& window);
+	void UpdateCamera();
 	inline glm::mat4 GetMatrix() const { return m_projectionMatrix * viewMatrix; };
-	inline float Rotation() const { return m_rotation.x; }
 private:
 public:
-	glm::vec3 m_rotation = glm::vec3(-89.0f, 0.0f, 0.0f);
 private:
-	float m_cameraSpeed = 30.0f;
+	float m_cameraSpeed = 15.0f;
 	float m_cameraNear = 0.01f;
 	float m_cameraFar = 1000.0f;
 	float m_cameraFOV = 45.0f;
@@ -24,6 +21,7 @@ private:
 	float m_lastMouseY = 1080 / 2.0f;
 	bool m_firstMouse = true;
 	glm::vec3 m_position = glm::vec3(0.0f, 0.0f, 5.0f);
+	glm::vec3 m_rotation = glm::vec3(-89.0f, 0.0f, 0.0f);
 	glm::vec3 m_cameraRight = glm::vec3(1.0f, 0.0f, 0.0f);
 	glm::vec3 m_cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 m_up = glm::vec3(0.0f, 1.0f, 0.0f);
