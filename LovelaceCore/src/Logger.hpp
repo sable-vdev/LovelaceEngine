@@ -22,7 +22,7 @@ public:
 	//static void Log(LogLevel logLevel, const std::wstring& character, const std::source_location& location = std::source_location::current());
 	//static void Log(LogLevel level, const char* format, ...);
 private:
-	static std::string LogLevelToString(LogLevel logLevel);
+	static std::string LogLevelToString(const LogLevel logLevel);
 	Logger() = delete;
 	~Logger() = delete;
 	Logger(const Logger&) = delete;

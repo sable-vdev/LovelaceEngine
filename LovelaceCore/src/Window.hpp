@@ -41,7 +41,6 @@ private:
 		{
 			win->m_height = height;
 			win->m_width = width;
-			Logger::Log(DEBUG, "Resized to width: " + std::to_string(width) + "height: " + std::to_string(height));
 		}
 	}
 };

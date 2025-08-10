@@ -27,6 +27,32 @@ public:
 		Logger::Log(DEBUG, "Added buffer to vertex array object of id: " + std::to_string(m_vaoId));
 	}
 
+	VAO(const VAO& other)
+		: m_vaoId(other.m_vaoId)
+	{
+	}
+
+	VAO(VAO&& other) noexcept
+		: m_vaoId(other.m_vaoId)
+	{
+	}
+
+	VAO& operator=(const VAO& other)
+	{
+		if (this == &other)
+			return *this;
+		m_vaoId = other.m_vaoId;
+		return *this;
+	}
+
+	VAO& operator=(VAO&& other) noexcept
+	{
+		if (this == &other)
+			return *this;
+		m_vaoId = other.m_vaoId;
+		return *this;
+	}
+
 	inline ~VAO()
 	{
 		Logger::Log(DEBUG, "Destroyed vertex array object of id: " + std::to_string(m_vaoId));

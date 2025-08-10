@@ -70,9 +70,9 @@ bool Window::Initialize()
     if (m_vsync) glfwSwapInterval(1);
     else glfwSwapInterval(0);
 
-    //glEnable(GL_CULL_FACE);
-    //glCullFace(GL_BACK);
-    //glFrontFace(GL_CCW);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();

@@ -1,12 +1,10 @@
-#include <iostream>
 #include "src/Camera.hpp"
 #include "src/Renderer.hpp"
-#include "math/Vector.hpp"
 
 int main()
 {
     Window window;
-    glm::vec3 objColor(1.0f);
+    glm::vec4 objColor(1.0f);
 
     glm::vec3 vertices[] = {
         glm::vec3(-1.0f, -1.0f, 1.0f),
@@ -71,9 +69,6 @@ int main()
             glm::rotate(model, glm::radians(rotDegrees.y) , glm::vec3(0.0f, 1.0f, 0.0f)) *
             glm::rotate(model, glm::radians(rotDegrees.x), glm::vec3(1.0f, 0.0f, 0.0f)) *
             glm::scale(model, scale);
-       
-        rotDegrees.y += 60.0f * window.GetDeltaTime();
-        if (rotDegrees.y >= 360.0f) rotDegrees.y = 0.0f;
 
         cam.UpdateCamera(input, window);
         renderer->Draw(va, ibo, shader);
@@ -86,7 +81,7 @@ int main()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         ImGui::Begin("App");
-        ImGui::Text("Application average %.3f ms/frame (%.2f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        ImGui::Text("Application average %.2f ms/frame (%.2f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         ImGui::Text("Delta time %.10f", window.GetDeltaTime());
         ImGui::Text("Application running for %.1f", window.GetApplicationRunTime());
         ImGui::End();
@@ -95,6 +90,11 @@ int main()
         ImGui::DragFloat3("Rotation", &rotDegrees.x, 0.1f);
         ImGui::DragFloat3("Scale", &scale.x, 0.1f);
         ImGui::ColorEdit4("Color", &objColor.x);
+        ImGui::End();
+        ImGui::Begin("Camera Toggle Ortho");
+        ImGui::Checkbox("Orthographic Camera", &cam.ortho);
+        ImGui::DragFloat3("Pos", &cam.m_position.x, 0.1f);
+        ImGui::DragFloat3("rot", &cam.m_rotation.x, 0.1f);
         ImGui::End();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

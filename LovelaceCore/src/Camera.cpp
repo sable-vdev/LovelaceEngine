@@ -1,24 +1,37 @@
 #include "Camera.hpp"
 
-Camera::Camera(float width, float height)
+Camera::Camera(const float width, const float height) : m_width(width), m_height(m_height)
 {
-    viewMatrix = glm::lookAt(m_position, m_position + m_cameraFront, m_up);
+    m_viewMatrix = glm::lookAt(m_position, m_position + m_cameraFront, m_up);
     m_aspect = width / height;
 
     m_lastMouseX = width / 2.0f;
     m_lastMouseY = height / 2.0f;
+
+    m_projectionMatrix = glm::perspective(m_cameraFOV, m_aspect, m_cameraNear, m_cameraFar);
 }
 
-void Camera::UpdateCamera(Input& input, Window& window)
+void Camera::UpdateCamera(Input& input, const Window& window)
 {
     m_cameraRight = glm::normalize(glm::cross(m_up, m_cameraFront));
 
-    mousePos = input.GetMousePos();
+    mousePos = Input::GetMousePos();
 
-    viewMatrix = glm::lookAt(m_position, m_position + m_cameraFront, m_up);
+    m_viewMatrix = glm::lookAt(m_position, m_position + m_cameraFront, m_up);
+
+    if (ortho)
+    {
+        m_projectionMatrix = glm::ortho(0.0f, m_width, 0.0f, m_height, m_cameraNear, m_cameraFar);
+        m_rotation.x = 0.0f;
+    }
+    else
+    {
+        m_projectionMatrix = glm::perspective(m_cameraFOV, m_aspect, m_cameraNear, m_cameraFar);
+    }
+
     if (Input::GetKeyDown(1))
     {
-        input.SetMouseVisibility(GLFW_CURSOR_DISABLED);
+        Input::SetMouseVisibility(GLFW_CURSOR_DISABLED);
 
         if (m_firstMouse)
         {
@@ -36,11 +49,8 @@ void Camera::UpdateCamera(Input& input, Window& window)
         m_rotation.x += xOffset;
         m_rotation.y += yOffset;
 
-        if (m_rotation.y > 89.0f)
-            m_rotation.y = 89.0f;
-        if (m_rotation.y < -89.0f)
-            m_rotation.y = -89.0f;
-
+        m_rotation.y = std::clamp(m_rotation.y, -89.0f, 89.0f);
+        
         glm::vec3 dir(0.0f);
         dir.x = cos(glm::radians(m_rotation.x)) * cos(glm::radians(m_rotation.y));
         dir.y = sin(glm::radians(m_rotation.y));
@@ -83,7 +93,7 @@ void Camera::UpdateCamera(Input& input, Window& window)
     }
     else if (!Input::GetKeyDown(1))
     {
-        input.SetMouseVisibility(GLFW_CURSOR_NORMAL);
+        Input::SetMouseVisibility(GLFW_CURSOR_NORMAL);
         m_firstMouse = true;
     }
 }

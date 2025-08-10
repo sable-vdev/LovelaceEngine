@@ -6,7 +6,7 @@ Input::Input(GLFWwindow* window)
 {
     m_window = window;}
 
-bool Input::GetKeyDown(int keyCode)
+bool Input::GetKeyDown(const int keyCode)
 {
     if (keyCode == GLFW_MOUSE_BUTTON_RIGHT || keyCode == GLFW_MOUSE_BUTTON_LEFT)
     {
@@ -26,7 +26,7 @@ glm::vec2 Input::GetMousePos()
     return mousePos;
 }
 
-void Input::SetMouseVisibility(int command)
+void Input::SetMouseVisibility(const int command)
 {
     glfwSetInputMode(m_window, GLFW_CURSOR, command);
 }

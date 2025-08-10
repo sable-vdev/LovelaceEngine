@@ -1,23 +1,25 @@
+#include <fstream>
+#include <iostream>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image/stb_image.h"
 #include "Shader.hpp"
 #include "Logger.hpp"
-#include <iostream>
-#include <fstream>
 
 Shader::Shader() : m_rendererId(glCreateProgram())
 {
 }
 
-void Shader::Initialize(uint32_t shaderType, const std::string& source, uint32_t shaderType2, const std::string& source2)
+void Shader::Initialize(const uint32_t shaderType, const std::string& source, const uint32_t shaderType2, const std::string& source2)
 {
-	uint32_t shader1 = glCreateShader(shaderType);
-	uint32_t shader2 = glCreateShader(shaderType2);
+	const uint32_t shader1 = glCreateShader(shaderType);
+	const uint32_t shader2 = glCreateShader(shaderType2);
 
 	std::string out;
 	ReadFile(source, out);
 
 	const char* p =  out.c_str();
 
-	int length = (int)strlen(out.c_str());
+	int length = static_cast<int>(strlen(out.c_str()));
 
 	glShaderSource(shader1, 1, &p, &length);
 	glCompileShader(shader1);
@@ -28,9 +30,9 @@ void Shader::Initialize(uint32_t shaderType, const std::string& source, uint32_t
 	{
 		int length;
 		glGetShaderiv(shader1, GL_INFO_LOG_LENGTH, &length);
-		char* message = (char*)malloc(length * sizeof(char));
+		char* message = static_cast<char*>(malloc(length * sizeof(char)));
 		glGetShaderInfoLog(shader1, length, &length, message);
-		Logger::Log(ERROR, message != 0 ? message : "0");
+		Logger::Log(ERROR, message != nullptr ? message : "0");
 		glDeleteShader(shader1);
 		free(message);
 	}
@@ -40,7 +42,7 @@ void Shader::Initialize(uint32_t shaderType, const std::string& source, uint32_t
 
 	const char* p2 = out.c_str();
 
-	length = (int)strlen(out.c_str());
+	length = static_cast<int>(strlen(out.c_str()));
 
 	glShaderSource(shader2, 1, &p2, &length);
 	glCompileShader(shader2);
@@ -51,9 +53,9 @@ void Shader::Initialize(uint32_t shaderType, const std::string& source, uint32_t
 	{
 		int length;
 		glGetShaderiv(shader2, GL_INFO_LOG_LENGTH, &length);
-		char* message = (char*)malloc(length * sizeof(char));
+		char* message = static_cast<char*>(malloc(length * sizeof(char)));
 		glGetShaderInfoLog(shader2, length, &length, message);
-		Logger::Log(ERROR, message != 0 ? message : "0");
+		Logger::Log(ERROR, message != nullptr ? message : "0");
 		glDeleteShader(shader2);
 		free(message);
 	}
@@ -62,6 +64,7 @@ void Shader::Initialize(uint32_t shaderType, const std::string& source, uint32_t
 	glAttachShader(m_rendererId, shader2);
 	glLinkProgram(m_rendererId);
 
+	//delete p2;
 	glDeleteShader(shader1);
 	glDeleteShader(shader2);
 }
