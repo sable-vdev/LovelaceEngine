@@ -13,11 +13,11 @@ int main()
         -1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
         1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
         1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
-        -1.0f, -1.0f, -1.0f, 0.0f, 0.0f,
-        -1.0f, 1.0f, -1.0f, 0.0f, 1.0f
+        -1.0f, -1.0f, -1.0f, 1.0f, 0.0f,
+        -1.0f, 1.0f, -1.0f, 1.0f, 1.0f
     };
 
-    unsigned int ibod[] = {
+    unsigned int ebod[] = {
         0, 1, 2,
         2, 3, 0,
 
@@ -38,7 +38,7 @@ int main()
     };
 
     Buffer vb(GL_ARRAY_BUFFER, vertices, sizeof(vertices));
-    Buffer ibo(GL_ELEMENT_ARRAY_BUFFER, ibod, sizeof(ibod), sizeof(ibod)/sizeof(unsigned int));
+    Buffer ebo(GL_ELEMENT_ARRAY_BUFFER, ebod, sizeof(ebod), sizeof(ebod)/sizeof(unsigned int));
     VAO va;
     VertexBufferLayout vbl;
     vbl.Push<float>(3);
@@ -53,7 +53,7 @@ int main()
     shader.Unbind();
     vb.Unbind();
     va.Unbind();
-    ibo.Unbind();
+    ebo.Unbind();
 
     std::unique_ptr<Renderer> renderer = std::make_unique<Renderer>();
     glm::vec3 translation(0.0f);
@@ -62,6 +62,8 @@ int main()
 
     Camera cam(window.GetWidth(), window.GetHeight());
     Input input(window.GetWindow());
+
+    bool wireframe = false;
 
     while (window.Run())
     {
@@ -73,11 +75,11 @@ int main()
             glm::scale(model, scale);
 
         cam.UpdateCamera(input, window);
-        renderer->Draw(va, ibo, shader);
+        renderer->Draw(va, ebo, shader, wireframe);
         shader.SetUniformMat4f("model", model);
         shader.SetUniformMat4f("camera", cam.GetMatrix());
         shader.SetUniform3f("color", objColor.x, objColor.y, objColor.z);
-        renderer->Unbind(va, ibo, shader);
+        renderer->Unbind(va, ebo, shader);
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -86,6 +88,7 @@ int main()
         ImGui::Text("Application average %.2f ms/frame (%.2f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         ImGui::Text("Delta time %.10f", window.GetDeltaTime());
         ImGui::Text("Application running for %.1f", window.GetApplicationRunTime());
+        ImGui::Checkbox("Wireframe view", &wireframe);
         ImGui::End();
         ImGui::Begin("Cube");
         ImGui::DragFloat3("Position", &translation.x, 0.1f);

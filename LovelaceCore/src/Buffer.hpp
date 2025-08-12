@@ -5,7 +5,7 @@
 class Buffer
 {
 public:
-	//vertex buffer
+	//vbo
 	inline Buffer(const uint32_t& type, const void* data, uint32_t size) : m_bufferType(type)
 	{
 		glGenBuffers(1, &m_bufferId);
@@ -13,7 +13,7 @@ public:
 		glBufferData(m_bufferType, size, data, GL_STATIC_DRAW);
 		Logger::Log(DEBUG, "Created buffer with id: " + std::to_string(m_bufferId));
 	}
-	//index buffer
+	//ebo
 	inline Buffer(const uint32_t& type, const void* data, uint32_t size, uint8_t count) : m_bufferType(type), m_count(count)
 	{
 		glGenBuffers(1, &m_bufferId);
