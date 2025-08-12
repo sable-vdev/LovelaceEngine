@@ -6,15 +6,15 @@ int main()
     Window window;
     glm::vec4 objColor(1.0f);
 
-    glm::vec3 vertices[] = {
-        glm::vec3(-1.0f, -1.0f, 1.0f),
-        glm::vec3(1.0f, -1.0f, 1.0f),
-        glm::vec3(1.0f, 1.0f, 1.0f),
-        glm::vec3(-1.0f, 1.0f, 1.0f),
-        glm::vec3(1.0f, -1.0f, -1.0f),
-        glm::vec3(1.0f, 1.0f, -1.0f),
-        glm::vec3(-1.0f, -1.0f, -1.0f),
-        glm::vec3(-1.0f, 1.0f, -1.0f)
+    float vertices[] = {
+        -1.0f, -1.0f, 1.0f, 1.0f, 1.0f,
+        1.0f, -1.0f, 1.0f, 1.0f, 0.0f,
+        1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+        -1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
+        -1.0f, -1.0f, -1.0f, 0.0f, 0.0f,
+        -1.0f, 1.0f, -1.0f, 0.0f, 1.0f
     };
 
     unsigned int ibod[] = {
@@ -42,10 +42,12 @@ int main()
     VAO va;
     VertexBufferLayout vbl;
     vbl.Push<float>(3);
+    vbl.Push<float>(2);
     va.AddBuffer(vb, vbl);
 
     Shader shader;
     shader.Initialize(GL_VERTEX_SHADER, "shader\\vertex.shader", GL_FRAGMENT_SHADER, "shader\\frag.shader");
+    shader.AddTexture("container.jpg");
     shader.Bind();
 
     shader.Unbind();

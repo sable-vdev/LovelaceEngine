@@ -37,7 +37,6 @@
     <ClCompile Include="src\VertexBufferLayout.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\Users\Julian\Downloads\stb_image.h" />
     <ClInclude Include="dependencies\include\GLAD\glad.h" />
     <ClInclude Include="dependencies\include\GLAD\khrplatform.h" />
     <ClInclude Include="src\Input.hpp" />
