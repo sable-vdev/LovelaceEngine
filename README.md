@@ -14,6 +14,6 @@ Current feature of the Render Engine:\
 
 To-Do's for now:\
 -> Lightning\
--> Model Loading\
+-> Model Loading
 
 
