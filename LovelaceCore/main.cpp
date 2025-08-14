@@ -7,13 +7,13 @@ int main()
     glm::vec4 objColor(1.0f);
 
     float vertices[] = {
-        -1.0f, -1.0f, 1.0f, 1.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
         1.0f, -1.0f, 1.0f, 1.0f, 0.0f,
-        1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+        1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
         -1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
+        1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
         1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
-        -1.0f, -1.0f, -1.0f, 1.0f, 0.0f,
+        -1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
         -1.0f, 1.0f, -1.0f, 1.0f, 1.0f
     };
 
@@ -47,7 +47,7 @@ int main()
 
     Shader shader;
     shader.Initialize(GL_VERTEX_SHADER, "shader\\vertex.shader", GL_FRAGMENT_SHADER, "shader\\frag.shader");
-    shader.AddTexture("container.jpg");
+    shader.AddTexture("Untitled.png");
     shader.Bind();
 
     shader.Unbind();
@@ -96,11 +96,7 @@ int main()
         ImGui::DragFloat3("Scale", &scale.x, 0.1f);
         ImGui::ColorEdit4("Color", &objColor.x);
         ImGui::End();
-        ImGui::Begin("Camera Toggle Ortho");
-        ImGui::Checkbox("Orthographic Camera", &cam.ortho);
-        ImGui::DragFloat3("Pos", &cam.m_position.x, 0.1f);
-        ImGui::DragFloat3("rot", &cam.m_rotation.x, 0.1f);
-        ImGui::End();
+        cam.RenderImGui();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

@@ -1,6 +1,6 @@
 #include "Camera.hpp"
 
-Camera::Camera(const float width, const float height) : m_width(width), m_height(m_height)
+Camera::Camera(const float width, const float height) : m_width(width), m_height(height)
 {
     m_viewMatrix = glm::lookAt(m_position, m_position + m_cameraFront, m_up);
     m_aspect = width / height;
@@ -9,6 +9,18 @@ Camera::Camera(const float width, const float height) : m_width(width), m_height
     m_lastMouseY = height / 2.0f;
 
     m_projectionMatrix = glm::perspective(m_cameraFOV, m_aspect, m_cameraNear, m_cameraFar);
+}
+
+void Camera::RenderImGui()
+{
+    ImGui::Begin("Camera");
+    ImGui::Checkbox("Orthographic Camera", &ortho);
+    ImGui::DragFloat3("Position", &m_position.x, 0.1f);
+    ImGui::DragFloat3("Rotation", &m_rotation.x, 0.1f);
+    ImGui::DragFloat("FOV", &m_cameraFOV);
+    ImGui::DragFloat("Near", &m_cameraNear);
+    ImGui::DragFloat("Far", &m_cameraFar);
+    ImGui::End();
 }
 
 void Camera::UpdateCamera(Input& input, const Window& window)

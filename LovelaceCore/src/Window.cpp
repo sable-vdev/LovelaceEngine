@@ -1,5 +1,5 @@
 #include "Window.hpp"
-
+#include "stb_image.hpp"
 Window::Window()
     : m_window(nullptr), m_width(1280), m_height(720), m_title("Lovelace Render Engine"), m_vsync(true)
 {
@@ -52,14 +52,25 @@ bool Window::Initialize()
     glfwMakeContextCurrent(m_window);
     glfwSetWindowUserPointer(m_window, this);
     glfwSetFramebufferSizeCallback(m_window, FrameBufferSizeCallback);
-    
-    /*
-    if (glewInit() != GLEW_OK)
+
+    int width, height, nrChannels;
+
+    unsigned char* icon = stbi_load("../LovelaceCore/Ada_icon.png", &width, &height, &nrChannels, 0);
+
+    if (!icon)
     {
-        Logger::Log(ERROR, "Failed to initialize GLEW");
-        return false;
+        std::cout << stbi_failure_reason();
+        exit(-1);
     }
-    */
+
+    GLFWimage image{};
+    image.height = height;
+    image.width = width;
+    image.pixels = icon;
+
+    glfwSetWindowIcon(m_window, 1, &image);
+    stbi_image_free(icon);
+
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {

@@ -54,6 +54,7 @@
     <ClInclude Include="src\Renderer.hpp" />
     <ClInclude Include="src\Logger.hpp" />
     <ClInclude Include="src\Shader.hpp" />
+    <ClInclude Include="src\stb_image.hpp" />
     <ClInclude Include="src\VertexArrayObject.hpp" />
     <ClInclude Include="src\Window.hpp" />
     <ClInclude Include="src\Buffer.hpp" />
