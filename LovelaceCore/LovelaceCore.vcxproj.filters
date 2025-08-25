@@ -136,9 +136,11 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shader\vertex.shader" />
-    <None Include="shader\frag.shader" />
+    <None Include="shader\default.vert.shader" />
+    <None Include="shader\default.frag.shader" />
     <None Include="dependencies\lib\glfw3.dll" />
+    <None Include="shader\light.vert.shader" />
+    <None Include="shader\light.frag.shader" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="dependencies\include\imgui\LICENSE.txt" />

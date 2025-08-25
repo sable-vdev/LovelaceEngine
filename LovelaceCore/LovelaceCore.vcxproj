@@ -63,8 +63,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="dependencies\lib\glfw3.dll" />
-    <None Include="shader\frag.shader" />
-    <None Include="shader\vertex.shader" />
+    <None Include="shader\default.frag.shader" />
+    <None Include="shader\light.vert.shader" />
+    <None Include="shader\light.frag.shader" />
+    <None Include="shader\default.vert.shader" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="dependencies\include\imgui\LICENSE.txt" />
