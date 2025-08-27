@@ -81,8 +81,8 @@ bool Window::Initialize()
     if (m_vsync) glfwSwapInterval(1);
     else glfwSwapInterval(0);
 
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
+    //glEnable(GL_CULL_FACE);
+    //glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
 
     IMGUI_CHECKVERSION();
@@ -108,6 +108,7 @@ void Window::Timer()
 bool Window::Run()
 {
     if (glfwWindowShouldClose(m_window)) return false;
+    Timer();
     
     glViewport(0, 0, m_width, m_height);
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -116,7 +117,6 @@ bool Window::Run()
 
     glfwPollEvents();
 
-    Timer();
 
     m_applicationRunTime += m_deltaTime;
     return true;

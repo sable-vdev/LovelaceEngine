@@ -7,14 +7,14 @@ int main()
     glm::vec4 objColor(1.0f);
 
     float vertices[] = {
-        -1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
-        1.0f, -1.0f, 1.0f, 1.0f, 0.0f,
-        1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, -1.0f, -1.0f, 0.0f, 1.0f,
-        1.0f, 1.0f, -1.0f, 1.0f, 0.0f,
-        -1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f, -1.0f, 1.0f, 1.0f
+        -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, -0.577f, -0.577f, 0.577f,
+        1.0f, -1.0f, 1.0f, 1.0f, 0.0f, 0.577f, -0.577f, 0.577f,
+        1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.577f, 0.577f, 0.577f,
+        -1.0f, 1.0f, 1.0f, 0.0f, 1.0f, -0.577f, 0.577f, 0.577f,
+        1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 0.577f, -0.577f, -0.577f,
+        1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 0.577f, 0.577f, -0.577f,
+        -1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -0.577f, -0.577f, -0.577f,
+        -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -0.577f, 0.577f, -0.577f,
     };
 
     float lightpos[] = {
@@ -49,13 +49,13 @@ int main()
     };
 
     Buffer vb(GL_ARRAY_BUFFER, vertices, sizeof(vertices));
-    
     Buffer ebo(GL_ELEMENT_ARRAY_BUFFER, ebod, sizeof(ebod), sizeof(ebod)/sizeof(unsigned int));
     VAO va;
 
     VertexBufferLayout vbl;
     vbl.Push<float>(3);
     vbl.Push<float>(2);
+    vbl.Push<float>(3);
     va.AddBuffer(vb, vbl);
 
     Shader shader;
@@ -68,8 +68,9 @@ int main()
     va.Unbind();
     ebo.Unbind();
 
-    ebo.Bind();
     Buffer vblight(GL_ARRAY_BUFFER, lightpos, sizeof(lightpos));
+    Buffer ebolight(GL_ELEMENT_ARRAY_BUFFER, ebod, sizeof(ebod), sizeof(ebod) / sizeof(unsigned int));
+    ebolight.Bind();
     VAO light;
     VertexBufferLayout vblLight;
     vblLight.Push<float>(3);
@@ -81,7 +82,7 @@ int main()
     lightShader.Unbind();
     vblight.Unbind();
     light.Unbind();
-    ebo.Unbind();
+    ebolight.Unbind();
 
     glm::vec3 lightPos = glm::vec3(5.0f, .0f, .0f);
     glm::mat4 lightMat = glm::mat4(1.0f);
@@ -99,6 +100,9 @@ int main()
 
     glm::vec4 lightColor = glm::vec4(1.0f);
 
+    //renderer->renderLayout.emplace_back(va, ebo, shader);
+   //renderer->renderLayout.emplace_back(light, ebo, lightShader);
+
     while (window.Run())
     {
         glm::mat4 model(1.0f);
@@ -109,18 +113,21 @@ int main()
             glm::scale(model, scale);
 
         cam.UpdateCamera(input, window);
+
         renderer->Draw(va, ebo, shader, wireframe);
         shader.SetUniformMat4f("model", model);
         shader.SetUniformMat4f("camera", cam.GetMatrix());
-        shader.SetUniform3f("color", objColor.x, objColor.y, objColor.z);
-        shader.SetUniform4f("lightColor", lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+        shader.SetUniform3f("objectColor", objColor.x, objColor.y, objColor.z);
+        shader.SetUniform3f("lightColor", lightColor.x, lightColor.y, lightColor.z);
+        shader.SetUniform3f("lightPos", lightPos.x, lightPos.y, lightPos.z);
         renderer->Unbind(va, ebo, shader);
 
-        renderer->Draw(light, ebo, lightShader, wireframe);
+        renderer->Draw(light, ebolight, lightShader, wireframe);
         lightShader.SetUniformMat4f("camera", cam.GetMatrix());
         lightShader.SetUniformMat4f("model", lightMat);
         lightShader.SetUniform4f("lightColor", lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-        renderer->Unbind(light, ebo, lightShader);
+        renderer->Unbind(light, ebolight, lightShader);
+
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();

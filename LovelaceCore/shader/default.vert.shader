@@ -1,17 +1,21 @@
 #version 330 core
 
-layout (location = 0) in vec3 locPos;
+layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec2 aTexCoord;
+layout (location = 2) in vec3 aNormal;
 
 uniform mat4 model;
 uniform mat4 camera;
-uniform vec3 color;
-out vec4 outColor;
-out vec2 TexCoord;
+
+out vec2 outTexCoord;
+out vec3 outNormal;
+out vec3 outFragPos;
 
 void main()
 {
-    gl_Position = camera * model * vec4(locPos, 1.0f);
-    outColor = vec4(color, 1.0f);
-    TexCoord = aTexCoord;
+    outTexCoord = aTexCoord;
+    outFragPos = vec3(model * vec4(aPos, 1.0));
+    outNormal = mat3(transpose(inverse(model))) * aNormal;
+
+    gl_Position = camera * vec4(outFragPos, 1.0);
 }

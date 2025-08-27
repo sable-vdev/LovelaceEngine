@@ -14,11 +14,51 @@ void Renderer::Draw(const VAO& vao, const Buffer& buffer, const Shader& shader, 
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
+
+	switch (buffer.GetBufferType())
+	{
+	case GL_ELEMENT_ARRAY_BUFFER:
+		glDrawElements(GL_TRIANGLES, buffer.GetCount(), GL_UNSIGNED_INT, nullptr);
+		break;
+	case GL_ARRAY_BUFFER:
+		glDrawArrays(GL_TRIANGLES, 0, buffer.GetSize() / sizeof(float));
+	}
 	
-	glDrawElements(GL_TRIANGLES, buffer.GetCount(), GL_UNSIGNED_INT, nullptr);
 
 }
 
+//future addon for dynamic rendering of objects
+/*
+void Renderer::Draw(bool wireframe)
+{
+	if (!renderLayout.empty())
+	{
+		for (auto &item : renderLayout)
+		{
+			item.shader.Bind();
+			item.vao.Bind();
+			item.buffer.Bind();
+			glDrawElements(GL_TRIANGLES, item.buffer.GetCount(), GL_UNSIGNED_INT, nullptr);
+			//item.shader.Unbind();
+			//item.vao.Unbind();
+			//item.buffer.Unbind();
+		}
+	}
+}
+
+void Renderer::Unbind()
+{
+	if (!renderLayout.empty())
+	{
+		for (auto& item : renderLayout)
+		{
+			item.shader.Unbind();
+			item.vao.Unbind();
+			item.buffer.Unbind();
+		}
+	}
+}
+*/
 void Renderer::Unbind(const VAO& vao, const Buffer& buffer, const Shader& shader)
 {
 	shader.Unbind();

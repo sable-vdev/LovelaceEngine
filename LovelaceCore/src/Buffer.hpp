@@ -6,7 +6,7 @@ class Buffer
 {
 public:
 	//vbo
-	inline Buffer(const uint32_t& type, const void* data, uint32_t size) : m_bufferType(type)
+	inline Buffer(const uint32_t& type, const void* data, uint32_t size) : m_bufferType(type), m_size(size)
 	{
 		glGenBuffers(1, &m_bufferId);
 		glBindBuffer(m_bufferType, m_bufferId);
@@ -39,9 +39,11 @@ public:
 	}
 
 	inline uint8_t GetCount() const { return m_count; }
-
+	inline uint32_t GetBufferType() const { return m_bufferType; }
+	inline uint32_t GetSize() const { return m_size; }
 private:
 	uint8_t m_count = 0;
+	uint32_t m_size = 0;
 	uint32_t m_bufferId = 0;
 	uint32_t m_bufferType = 0;
 };
