@@ -96,11 +96,11 @@ void Camera::UpdateCamera(Input& input, const Window& window)
         }
         if (Input::GetKeyDown(GLFW_KEY_LEFT_SHIFT))
         {
-            m_cameraSpeed = 30.0f;
+            m_cameraSpeed = 20.0f;
         }
         else
         {
-            m_cameraSpeed = 15.0f;
+            m_cameraSpeed = 10.0f;
         }
     }
     else if (!Input::GetKeyDown(1))

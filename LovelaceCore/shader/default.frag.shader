@@ -12,11 +12,20 @@ uniform vec3 lightColor;
 uniform vec3 lightPos;
 uniform vec3 cameraPos;
 
+struct Material 
+{
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    float shininess;
+};
+
+uniform Material objectMaterial;
+
 void main()
 {
     //ambient lightning
-    float ambientStrength = 0.1;
-    vec3 ambient = ambientStrength * lightColor;
+    vec3 ambient = objectMaterial.ambient * lightColor;
     
     //diffusion lightning
     vec3 norm = normalize(outNormal);
@@ -24,15 +33,15 @@ void main()
     float diff = max(dot(norm, lightDir), 0.0); 
     // max because we dont want the product to become negative on a 90+ degree angle so the
     // lightning still has effect on vertcies that arent directly shined on by the light
-    vec3 diffuse = diff * lightColor;
+    vec3 diffuse = (diff * objectMaterial.diffuse) * lightColor;
     
     //specular lightning
-    float specularStrength = 0.5;
     vec3 viewDir = normalize(cameraPos - outFragPos);
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-    vec3 specular = specularStrength * spec * lightColor;
-    //phong result * objectColor
-    vec3 result = (ambient + diffuse + specular) * objectColor;
-    FragColor =  vec4(result, 1.0);
+    vec3 specular = (objectMaterial.specular * spec) * lightColor;
+
+    //phong result
+    vec3 result = (ambient + diffuse + specular);
+    FragColor =  texture(ourTexture, outTexCoord) * vec4(result, 1.0);
 }

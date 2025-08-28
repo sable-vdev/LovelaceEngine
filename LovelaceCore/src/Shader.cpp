@@ -112,7 +112,12 @@ void Shader::AddTexture(const std::string& path, const int id)
 	stbi_image_free(data);
 }
 
-void Shader::SetUniform4f( const std::string& name, float x, float y, float z, float w) const
+void Shader::SetUniform1f(const std::string& name, float x) const
+{
+	glUniform1f(GetUniformLocation(name), x);
+}
+
+void Shader::SetUniform4f(const std::string& name, float x, float y, float z, float w) const
 {
 	glUniform4f(GetUniformLocation(name), x, y, z, w);
 }

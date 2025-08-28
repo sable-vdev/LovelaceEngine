@@ -1,6 +1,6 @@
 #include "src/Camera.hpp"
 #include "src/Renderer.hpp"
-
+#include "src/Material.hpp"
 int main()
 {
     Window window;
@@ -146,6 +146,9 @@ int main()
 
     //renderer->renderLayout.emplace_back(va, ebo, shader);
     //renderer->renderLayout.emplace_back(light, ebo, lightShader);
+    // 
+    //jade material source from http://devernay.free.fr/cours/opengl/materials.html
+    Material mat = { .ambient = vec3(0.135f, 0.2225f, 0.1575f), .diffuse = vec3(0.54f, 0.89f, 0.63f), .specular = vec3(0.316228f, 0.316228f, 0.316228f), .shininess = 0.1f * 128.0f };
 
     while (window.Run())
     {
@@ -167,10 +170,14 @@ int main()
         shader.SetUniformMat4f("model", model);
         shader.SetUniformMat4f("camera", cam.GetMatrix());
         shader.SetUniformMat3f("normalMat", normalMatrix);
-        shader.SetUniform3f("objectColor", objColor);
+        //shader.SetUniform3f("objectColor", objColor);
         shader.SetUniform3f("lightColor", lightColor);
         shader.SetUniform3f("lightPos", lightPos);
         shader.SetUniform3f("cameraPos", cam.GetPosition());
+        shader.SetUniform3f("objectMaterial.ambient", mat.ambient);
+        shader.SetUniform3f("objectMaterial.diffuse", mat.diffuse);
+        shader.SetUniform3f("objectMaterial.specular", mat.specular);
+        shader.SetUniform1f("objectMaterial.shininess", mat.shininess);
         renderer->Unbind(va, vb, shader);
 
         
@@ -195,7 +202,7 @@ int main()
         ImGui::DragFloat3("Rotation", &rotDegrees.x, 0.1f);
         ImGui::DragFloat3("Scale", &scale.x, 0.1f);
         ImGui::DragFloat3("Lightpos", &lightPos.x, 0.1f);
-        ImGui::ColorEdit4("Color", &objColor.x);
+        //ImGui::ColorEdit4("Color", &objColor.x);
         ImGui::ColorEdit4("LightColor", &lightColor.x);
         ImGui::End();
         cam.RenderImGui();

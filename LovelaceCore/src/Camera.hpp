@@ -14,7 +14,7 @@ public:
 	void RenderImGui();
 	bool ortho = false;
 private:
-	float m_cameraSpeed = 15.0f;
+	float m_cameraSpeed = 10.0f;
 	float m_cameraNear = 0.01f;
 	float m_cameraFar = 1000.0f;
 	float m_cameraFOV = 45.0f;

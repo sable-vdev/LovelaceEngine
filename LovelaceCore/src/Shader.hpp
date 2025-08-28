@@ -12,6 +12,7 @@ public:
 	void Bind() const;
 	void Unbind() const;
 	void AddTexture(const std::string& path, const int id = 0);
+	void SetUniform1f(const std::string& name, float x) const;
 	void SetUniform4f(const std::string& name, float x, float y, float z, float w) const; 
 	void SetUniform4f(const std::string& name, glm::vec4 vector) const; 
 	void SetUniform3f(const std::string& name, float x, float y, float z) const;

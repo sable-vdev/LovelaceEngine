@@ -51,6 +51,7 @@
     <ClInclude Include="dependencies\include\imgui\imstb_rectpack.h" />
     <ClInclude Include="dependencies\include\imgui\imstb_textedit.h" />
     <ClInclude Include="dependencies\include\imgui\imstb_truetype.h" />
+    <ClInclude Include="src\Material.hpp" />
     <ClInclude Include="src\Renderer.hpp" />
     <ClInclude Include="src\Logger.hpp" />
     <ClInclude Include="src\Shader.hpp" />
