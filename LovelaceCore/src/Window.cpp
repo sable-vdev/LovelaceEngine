@@ -1,7 +1,7 @@
 #include "Window.hpp"
 #include "stb_image.hpp"
 Window::Window()
-    : m_window(nullptr), m_width(1280), m_height(720), m_title("Lovelace Render Engine"), m_vsync(true)
+    : m_window(nullptr), m_width(1280), m_height(720), m_title("Lovelace Render Engine"), m_vsync(false)
 {
     if (!Initialize())
     {

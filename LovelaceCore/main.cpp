@@ -142,13 +142,28 @@ int main()
 
     bool wireframe = false;
 
-    glm::vec4 lightColor = glm::vec4(255.0f / 255.0f, 248.0f / 255.0f, 136.0f / 255.0f, 255.0f / 255.0f);
+    glm::vec4 lightColor = glm::vec4(1.0f);
 
     //renderer->renderLayout.emplace_back(va, ebo, shader);
     //renderer->renderLayout.emplace_back(light, ebo, lightShader);
-    // 
-    //jade material source from http://devernay.free.fr/cours/opengl/materials.html
-    Material mat = { .ambient = vec3(0.135f, 0.2225f, 0.1575f), .diffuse = vec3(0.54f, 0.89f, 0.63f), .specular = vec3(0.316228f, 0.316228f, 0.316228f), .shininess = 0.1f * 128.0f };
+    int materialChoice = 0;
+
+    const Material materials[] = {
+        Material::Emerald(), Material::Jade(), Material::Obsidian(), Material::Pearl(), Material::Ruby(), Material::Turquoise(), Material::Brass(),
+        Material::Bronze(), Material::Chrome(), Material::Copper(), Material::Gold(), Material::Silver(), Material::BlackPlastic(), Material::CyanPlastic(),
+        Material::GreenPlastic(), Material::RedPlastic(), Material::WhitePlastic(), Material::YellowPlastic(), Material::BlackRubber(), Material::CyanRubber(),
+        Material::GreenRubber(), Material::RedRubber(), Material::WhiteRubber(), Material::YellowRubber()
+    };
+
+    Material mat = materials[materialChoice];
+
+    const char* materialNames[] = {
+        "Emerald", "Jade", "Obsidian", "Pearl", "Ruby", "Turquoise",
+        "Brass", "Bronze", "Chrome", "Copper", "Gold", "Silver",
+        "Black Plastic", "Cyan Plastic", "Green Plastic", "Red Plastic",
+        "White Plastic", "Yellow Plastic", "Black Rubber", "Cyan Rubber",
+        "Green Rubber", "Red Rubber", "White Rubber", "Yellow Rubber"
+    };
 
     while (window.Run())
     {
@@ -180,8 +195,6 @@ int main()
         shader.SetUniform1f("objectMaterial.shininess", mat.shininess);
         renderer->Unbind(va, vb, shader);
 
-        
-
         renderer->Draw(light, ebolight, lightShader, wireframe);
         lightShader.SetUniformMat4f("camera", cam.GetMatrix());
         lightShader.SetUniformMat4f("model", lightMat);
@@ -202,8 +215,14 @@ int main()
         ImGui::DragFloat3("Rotation", &rotDegrees.x, 0.1f);
         ImGui::DragFloat3("Scale", &scale.x, 0.1f);
         ImGui::DragFloat3("Lightpos", &lightPos.x, 0.1f);
-        //ImGui::ColorEdit4("Color", &objColor.x);
-        ImGui::ColorEdit4("LightColor", &lightColor.x);
+        if (ImGui::Combo("Material", &materialChoice, materialNames, IM_ARRAYSIZE(materialNames)))
+        {
+            mat = materials[materialChoice];
+        }
+        ImGui::Text("Ambient:  %.2f %.2f %.2f", mat.ambient.r, mat.ambient.g, mat.ambient.b);
+        ImGui::Text("Diffuse:  %.2f %.2f %.2f", mat.diffuse.r, mat.diffuse.g, mat.diffuse.b);
+        ImGui::Text("Specular: %.2f %.2f %.2f", mat.specular.r, mat.specular.g, mat.specular.b);
+        ImGui::Text("Shininess: %.2f", mat.shininess);
         ImGui::End();
         cam.RenderImGui();
         ImGui::Render();
