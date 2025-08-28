@@ -10,7 +10,7 @@ Current feature of the Render Engine:\
 -> 3D/2D space objects via the typical buffers, shaders\
 -> use of projection, view and model matrices\
 -> implemented a camera class\
--> Texture loading
+-> Texture loading\
 -> Introduced basic lightning per Phong lightning model\
 :: currently working on materials/ better lightning and maybe introducing "gameobjects" with properties like materials and so on\
 
