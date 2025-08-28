@@ -11,9 +11,10 @@ Current feature of the Render Engine:\
 -> use of projection, view and model matrices\
 -> implemented a camera class\
 -> Texture loading
+-> Introduced basic lightning per Phong lightning model\
+:: currently working on materials/ better lightning and maybe introducing "gameobjects" with properties like materials and so on\
 
 To-Do's for now:\
--> Lightning\
 -> Model Loading
 
 
