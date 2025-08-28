@@ -10,6 +10,7 @@ public:
 	void UpdateCamera(Input& input, const Window& window);
 	//void UpdateCamera();
 	inline glm::mat4 GetMatrix() const { return m_projectionMatrix * m_viewMatrix; }
+	inline glm::vec3 GetPosition() const { return m_position; }
 	void RenderImGui();
 	bool ortho = false;
 private:

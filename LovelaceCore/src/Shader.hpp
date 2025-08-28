@@ -13,8 +13,11 @@ public:
 	void Unbind() const;
 	void AddTexture(const std::string& path, const int id = 0);
 	void SetUniform4f(const std::string& name, float x, float y, float z, float w) const; 
+	void SetUniform4f(const std::string& name, glm::vec4 vector) const; 
 	void SetUniform3f(const std::string& name, float x, float y, float z) const;
+	void SetUniform3f(const std::string& name, glm::vec3 vector) const;
 	void SetUniformMat4f(const std::string& name, const glm::mat4& mat) const;
+	void SetUniformMat3f(const std::string& name, const glm::mat3& mat) const;
 	int GetUniformLocation(const std::string& name) const;
 	inline uint32_t GetShaderId() const { return m_rendererId; };
 private:

@@ -5,7 +5,7 @@ int main()
 {
     Window window;
     glm::vec4 objColor(1.0f);
-
+    /*
     float vertices[] = {
         -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, -0.577f, -0.577f, 0.577f,
         1.0f, -1.0f, 1.0f, 1.0f, 0.0f, 0.577f, -0.577f, 0.577f,
@@ -16,6 +16,7 @@ int main()
         -1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -0.577f, -0.577f, -0.577f,
         -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -0.577f, 0.577f, -0.577f,
     };
+    */
 
     float lightpos[] = {
         -0.1f, -0.1f, 0.1f,
@@ -26,6 +27,50 @@ int main()
         0.1f, 0.1f, -0.1f,
         -0.1f, -0.1f, -0.1f,
         -0.1f, 0.1f, -0.1f,
+    };
+
+    float vertices[] = {
+    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,  0.0f,  0.0f, -1.0f,
+     0.5f, -0.5f, -0.5f, 0.0f, 0.0f,  0.0f,  0.0f, -1.0f,
+     0.5f,  0.5f, -0.5f, 0.0f, 0.0f,  0.0f,  0.0f, -1.0f,
+     0.5f,  0.5f, -0.5f, 0.0f, 0.0f,  0.0f,  0.0f, -1.0f,
+    -0.5f,  0.5f, -0.5f, 0.0f, 0.0f,  0.0f,  0.0f, -1.0f,
+    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,  0.0f,  0.0f, -1.0f,
+
+    -0.5f, -0.5f,  0.5f, 0.0f, 0.0f,  0.0f,  0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f, 0.0f, 0.0f,  0.0f,  0.0f, 1.0f,
+     0.5f,  0.5f,  0.5f, 0.0f, 0.0f,  0.0f,  0.0f, 1.0f,
+     0.5f,  0.5f,  0.5f, 0.0f, 0.0f,  0.0f,  0.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f, 0.0f, 0.0f,  0.0f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f, 0.0f, 0.0f,  0.0f,  0.0f, 1.0f,
+
+    -0.5f,  0.5f,  0.5f, 0.0f, 0.0f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f, 0.0f, 0.0f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f, 0.0f, 0.0f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f, 0.0f, 0.0f, -1.0f,  0.0f,  0.0f,
+
+     0.5f,  0.5f,  0.5f, 0.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f, -0.5f, 0.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f, 0.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f, 0.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f,  0.5f, 0.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f,  0.5f, 0.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+
+    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f, -0.5f, 0.0f, 0.0f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f, 0.0f, 0.0f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f, 0.0f, 0.0f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f, 0.0f, 0.0f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,  0.0f, -1.0f,  0.0f,
+
+    -0.5f,  0.5f, -0.5f, 0.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f, -0.5f, 0.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f, 0.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f, 0.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f, 0.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f, 0.0f, 0.0f,  0.0f,  1.0f,  0.0f
     };
 
     unsigned int ebod[] = {
@@ -49,9 +94,8 @@ int main()
     };
 
     Buffer vb(GL_ARRAY_BUFFER, vertices, sizeof(vertices));
-    Buffer ebo(GL_ELEMENT_ARRAY_BUFFER, ebod, sizeof(ebod), sizeof(ebod)/sizeof(unsigned int));
+    //Buffer ebo(GL_ELEMENT_ARRAY_BUFFER, ebod, sizeof(ebod), sizeof(ebod)/sizeof(unsigned int));
     VAO va;
-
     VertexBufferLayout vbl;
     vbl.Push<float>(3);
     vbl.Push<float>(2);
@@ -66,7 +110,7 @@ int main()
     shader.Unbind();
     vb.Unbind();
     va.Unbind();
-    ebo.Unbind();
+    //ebo.Unbind();
 
     Buffer vblight(GL_ARRAY_BUFFER, lightpos, sizeof(lightpos));
     Buffer ebolight(GL_ELEMENT_ARRAY_BUFFER, ebod, sizeof(ebod), sizeof(ebod) / sizeof(unsigned int));
@@ -84,7 +128,7 @@ int main()
     light.Unbind();
     ebolight.Unbind();
 
-    glm::vec3 lightPos = glm::vec3(5.0f, .0f, .0f);
+    glm::vec3 lightPos = glm::vec3(0.0f, 1.0f, 0.0f);
     glm::mat4 lightMat = glm::mat4(1.0f);
     lightMat = glm::translate(lightMat, lightPos);
 
@@ -98,10 +142,10 @@ int main()
 
     bool wireframe = false;
 
-    glm::vec4 lightColor = glm::vec4(1.0f);
+    glm::vec4 lightColor = glm::vec4(255.0f / 255.0f, 248.0f / 255.0f, 136.0f / 255.0f, 255.0f / 255.0f);
 
     //renderer->renderLayout.emplace_back(va, ebo, shader);
-   //renderer->renderLayout.emplace_back(light, ebo, lightShader);
+    //renderer->renderLayout.emplace_back(light, ebo, lightShader);
 
     while (window.Run())
     {
@@ -112,22 +156,30 @@ int main()
             glm::rotate(model, glm::radians(rotDegrees.x), glm::vec3(1.0f, 0.0f, 0.0f)) *
             glm::scale(model, scale);
 
+        glm::mat3 normalMatrix = glm::transpose(glm::inverse(model));
+
+        glm::mat4 lightMat = glm::mat4(1.0f);
+        lightMat = glm::translate(lightMat, lightPos);
+
         cam.UpdateCamera(input, window);
 
-        renderer->Draw(va, ebo, shader, wireframe);
+        renderer->Draw(va, vb, shader, wireframe);
         shader.SetUniformMat4f("model", model);
         shader.SetUniformMat4f("camera", cam.GetMatrix());
-        shader.SetUniform3f("objectColor", objColor.x, objColor.y, objColor.z);
-        shader.SetUniform3f("lightColor", lightColor.x, lightColor.y, lightColor.z);
-        shader.SetUniform3f("lightPos", lightPos.x, lightPos.y, lightPos.z);
-        renderer->Unbind(va, ebo, shader);
+        shader.SetUniformMat3f("normalMat", normalMatrix);
+        shader.SetUniform3f("objectColor", objColor);
+        shader.SetUniform3f("lightColor", lightColor);
+        shader.SetUniform3f("lightPos", lightPos);
+        shader.SetUniform3f("cameraPos", cam.GetPosition());
+        renderer->Unbind(va, vb, shader);
+
+        
 
         renderer->Draw(light, ebolight, lightShader, wireframe);
         lightShader.SetUniformMat4f("camera", cam.GetMatrix());
         lightShader.SetUniformMat4f("model", lightMat);
         lightShader.SetUniform4f("lightColor", lightColor.x, lightColor.y, lightColor.z, lightColor.w);
         renderer->Unbind(light, ebolight, lightShader);
-
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -142,6 +194,7 @@ int main()
         ImGui::DragFloat3("Position", &translation.x, 0.1f);
         ImGui::DragFloat3("Rotation", &rotDegrees.x, 0.1f);
         ImGui::DragFloat3("Scale", &scale.x, 0.1f);
+        ImGui::DragFloat3("Lightpos", &lightPos.x, 0.1f);
         ImGui::ColorEdit4("Color", &objColor.x);
         ImGui::ColorEdit4("LightColor", &lightColor.x);
         ImGui::End();
