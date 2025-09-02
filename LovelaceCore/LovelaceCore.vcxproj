@@ -39,6 +39,7 @@
   <ItemGroup>
     <ClInclude Include="dependencies\include\GLAD\glad.h" />
     <ClInclude Include="dependencies\include\GLAD\khrplatform.h" />
+    <ClInclude Include="src\Light.hpp" />
     <ClInclude Include="src\Input.hpp" />
     <ClInclude Include="math\Matrix.hpp" />
     <ClInclude Include="src\Camera.hpp" />

@@ -22,6 +22,7 @@ void Renderer::Draw(const VAO& vao, const Buffer& buffer, const Shader& shader, 
 		break;
 	case GL_ARRAY_BUFFER:
 		glDrawArrays(GL_TRIANGLES, 0, buffer.GetSize() / sizeof(float));
+		break;
 	}
 	
 

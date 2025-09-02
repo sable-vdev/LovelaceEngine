@@ -1,6 +1,7 @@
 #include "src/Camera.hpp"
 #include "src/Renderer.hpp"
 #include "src/Material.hpp"
+#include "src/Light.hpp"
 int main()
 {
     Window window;
@@ -104,8 +105,8 @@ int main()
 
     Shader shader;
     shader.Initialize(GL_VERTEX_SHADER, "shader\\default.vert.shader", GL_FRAGMENT_SHADER, "shader\\default.frag.shader");
-    shader.AddTexture("container2.png");
-    shader.AddTexture("container2_specular.png");
+    shader.AddTexture("resources\\container2.png");
+    shader.AddTexture("resources\\container2_specular.png");
     shader.Bind();
 
     shader.Unbind();
@@ -129,9 +130,8 @@ int main()
     light.Unbind();
     ebolight.Unbind();
 
-    glm::vec3 lightPos = glm::vec3(1.2f, 1.0f, 2.0f);
-    glm::mat4 lightMat = glm::mat4(1.0f);
-    lightMat = glm::translate(lightMat, lightPos);
+    glm::vec3 lightPos = glm::vec3();
+    
 
     std::unique_ptr<Renderer> renderer = std::make_unique<Renderer>();
     glm::vec3 translation(0.0f);
@@ -140,10 +140,8 @@ int main()
 
     Camera cam(window.GetWidth(), window.GetHeight());
     Input input(window.GetWindow());
-
+    Light lightObj;
     bool wireframe = false;
-
-    glm::vec4 lightColor = glm::vec4(1.0f);
     /*
     int materialChoice = 0;
 
@@ -164,61 +162,83 @@ int main()
         "Green Rubber", "Red Rubber", "White Rubber", "Yellow Rubber"
     };
     */
-    Material lightMaterial(vec3(0.2f, 0.2f, 0.2f), vec3(0.5f, 0.5f, 0.5f), vec3(1.0f, 1.0f, 1.0f), 0.0f);
+
+    const char* lightOptions[] = {
+        "Directional light", "Point light", "Spotlight"
+    };
 
     bool lightingCubeDemo = true;
+
+    glm::vec3 cubePositions[] = {
+        glm::vec3(0.0f,  0.0f,  0.0f),
+        glm::vec3(2.0f,  5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f),
+        glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3(2.4f, -0.4f, -3.5f),
+        glm::vec3(-1.7f,  3.0f, -7.5f),
+        glm::vec3(1.3f, -2.0f, -2.5f),
+        glm::vec3(1.5f,  2.0f, -2.5f),
+        glm::vec3(1.5f,  0.2f, -1.5f),
+        glm::vec3(-1.3f,  1.0f, -1.5f)
+    };
 
     while (window.Run())
     {
 
         if (lightingCubeDemo)
         {
+            for (int i = 0; i < 10; i++)
+            {
 
-            //if (rotDegrees.y >= 360.0f) rotDegrees.y = 0.0f;
-            if (rotDegrees.x >= 360.0f) rotDegrees.x = 0.0f;
-            //rotDegrees.y += window.GetDeltaTime() * 20.0f;
-            //rotDegrees.x += window.GetDeltaTime() * 50.0f;
 
-            glm::mat4 model(1.0f);
-            model = glm::translate(model, translation) *
-                glm::rotate(model, glm::radians(rotDegrees.z), glm::vec3(0.0f, 0.0f, 1.0f)) *
-                glm::rotate(model, glm::radians(rotDegrees.y), glm::vec3(0.0f, 1.0f, 0.0f)) *
-                glm::rotate(model, glm::radians(rotDegrees.x), glm::vec3(1.0f, 0.0f, 0.0f)) *
-                glm::scale(model, scale);
+                //if (rotDegrees.y >= 360.0f) rotDegrees.y = 0.0f;
+                if (rotDegrees.x >= 360.0f) rotDegrees.x = 0.0f;
+                //rotDegrees.y += window.GetDeltaTime() * 20.0f;
+                //rotDegrees.x += window.GetDeltaTime() * 50.0f;
+                /*
+                glm::mat4 model(1.0f);
+                model = glm::translate(model, glm::vec3(0, i * 1.5f, 0)) *
+                    glm::rotate(model, glm::radians(rotDegrees.z), glm::vec3(0.0f, 0.0f, 1.0f)) *
+                    glm::rotate(model, glm::radians(rotDegrees.y), glm::vec3(0.0f, 1.0f, 0.0f)) *
+                    glm::rotate(model, glm::radians(rotDegrees.x), glm::vec3(1.0f, 0.0f, 0.0f)) *
+                    glm::scale(model, scale);
+                */
 
-            glm::mat3 normalMatrix = glm::transpose(glm::inverse(model));
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, cubePositions[i]);
+                float angle = 20.0f * i;
+                model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 
-            renderer->Draw(va, vb, shader, wireframe);
-            shader.SetUniformMat4f("model", model);
-            shader.SetUniformMat4f("camera", cam.GetMatrix());
-            shader.SetUniformMat3f("normalMat", normalMatrix);
-            //shader.SetUniform3f("objectColor", objColor);
-            shader.SetUniform3f("lightColor", lightColor);
-            shader.SetUniform3f("light.position", lightPos);
-            shader.SetUniform3f("light.direction", 1.0, -1.0, -0.3);
-            shader.SetUniform3f("light.ambient", lightMaterial.ambient);
-            shader.SetUniform3f("light.diffuse", lightMaterial.diffuse);
-            shader.SetUniform3f("light.specular", lightMaterial.specular);
-            shader.SetUniform3f("cameraPos", cam.GetPosition());
-            shader.SetUniform1i("material.diffuse", 0);
-            shader.SetUniform1i("material.specular", 1);
-            shader.SetUniform1f("material.shininess", 64.0f);
-            shader.SetUniform1f("light.constant", 1.0f);
-            shader.SetUniform1f("light.linear", 0.09f);
-            shader.SetUniform1f("light.quadratic", 0.032f);
-            renderer->Unbind(va, vb, shader);
-            
+                glm::mat3 normalMatrix = glm::transpose(glm::inverse(model));
+
+                renderer->Draw(va, vb, shader, wireframe);
+                shader.SetUniformMat4f("model", model);
+                shader.SetUniformMat4f("camera", cam.GetMatrix());
+                shader.SetUniformMat3f("normalMat", normalMatrix);
+                shader.SetUniform3f("light.position", lightObj.position);
+                shader.SetUniform3f("light.direction", lightObj.rotation);
+                shader.SetUniform3f("light.ambient", lightObj.ambient);
+                shader.SetUniform3f("light.diffuse", lightObj.diffuse);
+                shader.SetUniform3f("light.specular", lightObj.specular);
+                shader.SetUniform3f("cameraPos", cam.GetPosition());
+                shader.SetUniform1i("material.diffuse", 0);
+                shader.SetUniform1i("material.specular", 1);
+                shader.SetUniform1f("material.shininess", 64.0f);
+                shader.SetUniform1f("light.constant", lightObj.attenuationConstant);
+                shader.SetUniform1f("light.linear", lightObj.attenuationLinear);
+                shader.SetUniform1f("light.quadratic", lightObj.attenuationQuadratic);
+                shader.SetUniform1i("light.type", lightObj.lightMode);
+                shader.SetUniform1f("light.cutOff", glm::cos(glm::radians(12.0f)));
+                renderer->Unbind(va, vb, shader);
+            }
         }
 
-        lightMat = glm::mat4(1.0f);
-        lightMat = glm::translate(lightMat, lightPos);
-
+        lightObj.ModelUpdate();
         cam.UpdateCamera(input, window);
 
         renderer->Draw(light, ebolight, lightShader, wireframe);
         lightShader.SetUniformMat4f("camera", cam.GetMatrix());
-        lightShader.SetUniformMat4f("model", lightMat);
-        lightShader.SetUniform4f("lightColor", lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+        lightShader.SetUniformMat4f("model", lightObj.modelMatrix);
         renderer->Unbind(light, ebolight, lightShader);
 
         ImGui_ImplOpenGL3_NewFrame();
@@ -250,12 +270,19 @@ int main()
             */
             ImGui::End();
         }
-
+        //TODO: Fix spotlight
         ImGui::Begin("Light");
-        ImGui::DragFloat3("Lightpos", &lightPos.x, 0.1f);
-        ImGui::DragFloat3("Light ambient", &lightMaterial.ambient.r, 0.1f);
-        ImGui::DragFloat3("Light diffuse", &lightMaterial.diffuse.r, 0.1f);
-        ImGui::DragFloat3("Light specular", &lightMaterial.specular.r, 0.1f);
+        if (ImGui::Combo("Lighting Type", &lightObj.lightMode, lightOptions, IM_ARRAYSIZE(lightOptions)))
+        {
+            if (lightObj.lightMode == 0) lightObj.ChangeToDirectionalLight();
+            else if (lightObj.lightMode == 1) lightObj.ChangeToPointLight();
+            else if (lightObj.lightMode == 2) lightObj.ChangeToSpotlight();
+        }
+        ImGui::DragFloat3("Lightpos", &lightObj.position.x, 0.1f);
+        ImGui::DragFloat3("Lightrotation", &lightObj.rotation.x, 0.1f);
+        ImGui::DragFloat3("Light ambient", &lightObj.ambient.r, 0.1f);
+        ImGui::DragFloat3("Light diffuse", &lightObj.diffuse.r, 0.1f);
+        ImGui::DragFloat3("Light specular", &lightObj.specular.r, 0.1f);
         ImGui::End();
         cam.RenderImGui();
         ImGui::Render();

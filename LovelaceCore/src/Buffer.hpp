@@ -5,6 +5,7 @@
 class Buffer
 {
 public:
+	inline Buffer() = default;
 	//vbo
 	inline Buffer(const uint32_t& type, const void* data, uint32_t size) : m_bufferType(type), m_size(size)
 	{

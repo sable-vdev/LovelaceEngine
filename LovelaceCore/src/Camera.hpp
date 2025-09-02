@@ -24,7 +24,7 @@ private:
 	float m_lastMouseX = 1920 / 2.0f;
 	float m_lastMouseY = 1080 / 2.0f;
 	bool m_firstMouse = true;
-	glm::vec3 m_position = glm::vec3(0.0f, 5.0f, 15.0f);
+	glm::vec3 m_position = glm::vec3(0.0f, 0.0f, 5.0f);
 	glm::vec3 m_rotation = glm::vec3(-89.0f, 0.0f, 0.0f);
 	glm::vec3 m_cameraRight = glm::vec3(1.0f, 0.0f, 0.0f);
 	glm::vec3 m_cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);

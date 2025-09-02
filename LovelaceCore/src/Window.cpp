@@ -55,7 +55,7 @@ bool Window::Initialize()
 
     int width, height, nrChannels;
 
-    unsigned char* icon = stbi_load("../LovelaceCore/Ada_icon.png", &width, &height, &nrChannels, 0);
+    unsigned char* icon = stbi_load("../LovelaceCore/resources/Ada_icon.png", &width, &height, &nrChannels, 0);
 
     if (!icon)
     {
