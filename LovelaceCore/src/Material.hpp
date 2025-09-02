@@ -15,9 +15,10 @@ struct Material
 		return { .ambient = vec3(0.0215f, 0.1745f, 0.0215f),
 			.diffuse = vec3(0.07568f, 0.61424f, 0.07568f),
 			.specular = vec3(0.633f, 0.727811f, 0.633f),
-			.shininess = 0.6f * 128 };
+			.shininess = 0.6f * 128 
+        };
 	}
-
+#pragma region StaticMaterials
     static inline const Material Jade()
     {
         return {
@@ -247,5 +248,5 @@ struct Material
             .shininess = 0.078125f * 128
         };
     }
-
+#pragma endregion
 };

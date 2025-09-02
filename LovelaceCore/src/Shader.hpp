@@ -12,6 +12,7 @@ public:
 	void Bind() const;
 	void Unbind() const;
 	void AddTexture(const std::string& path, const int id = 0);
+	void SetUniform1i(const std::string& name, int x) const;
 	void SetUniform1f(const std::string& name, float x) const;
 	void SetUniform4f(const std::string& name, float x, float y, float z, float w) const; 
 	void SetUniform4f(const std::string& name, glm::vec4 vector) const; 
@@ -25,4 +26,5 @@ private:
 	bool ReadFile(const std::string& source, std::string& out);
 private:
 	uint32_t m_rendererId;
+	uint32_t m_amountOfTextures = 0;
 };

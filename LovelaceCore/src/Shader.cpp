@@ -80,10 +80,9 @@ void Shader::Bind() const
 
 void Shader::AddTexture(const std::string& path, const int id)
 {
-	
 	uint32_t texture;
 	glGenTextures(1, &texture);
-	glActiveTexture(GL_TEXTURE0 + id);
+	glActiveTexture(GL_TEXTURE0 + m_amountOfTextures);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -110,6 +109,12 @@ void Shader::AddTexture(const std::string& path, const int id)
 	}
 	
 	stbi_image_free(data);
+	m_amountOfTextures++;
+}
+
+void Shader::SetUniform1i(const std::string& name, int x) const
+{
+	glUniform1i(GetUniformLocation(name), x);
 }
 
 void Shader::SetUniform1f(const std::string& name, float x) const
