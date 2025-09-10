@@ -14,12 +14,12 @@ class Window
 private:
 	int32_t m_width;
 	int32_t m_height;
-	const char* m_title;
-	bool m_vsync;
-	GLFWwindow* m_window;
 	float m_deltaTime;
 	float m_lastTime;
+	const char* m_title;
+	GLFWwindow* m_window;
 	float m_applicationRunTime;
+	bool m_vsync;
 public:
 	Window();
 	Window(int32_t width, int32_t height, const char* title, bool vsync);

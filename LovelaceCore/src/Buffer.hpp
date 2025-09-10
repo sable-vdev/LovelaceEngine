@@ -15,7 +15,7 @@ public:
 		Logger::Log(DEBUG, "Created buffer with id: " + std::to_string(m_bufferId));
 	}
 	//ebo
-	inline Buffer(const uint32_t& type, const void* data, uint32_t size, uint8_t count) : m_bufferType(type), m_count(count)
+	inline Buffer(const uint32_t& type, const void* data, uint32_t size, uint32_t count) : m_bufferType(type), m_count(count)
 	{
 		glGenBuffers(1, &m_bufferId);
 		glBindBuffer(m_bufferType, m_bufferId);
@@ -39,14 +39,14 @@ public:
 		glBindBuffer(m_bufferType, 0);
 	}
 
-	inline uint8_t GetCount() const { return m_count; }
+	inline uint32_t GetCount() const { return m_count; }
 	inline uint32_t GetBufferType() const { return m_bufferType; }
 	inline uint32_t GetSize() const { return m_size; }
 private:
-	uint8_t m_count = 0;
 	uint32_t m_size = 0;
 	uint32_t m_bufferId = 0;
 	uint32_t m_bufferType = 0;
+	uint32_t m_count = 0;
 };
 
 

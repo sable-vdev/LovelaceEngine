@@ -2,6 +2,7 @@
 #include <inttypes.h>
 #include <string>
 #include <GLAD/glad.h>
+#include "stb_image/stb_image.h"
 #include "glm/glm.hpp"
 
 class Shader
@@ -20,6 +21,7 @@ public:
 	void SetUniform3f(const std::string& name, glm::vec3 vector) const;
 	void SetUniformMat4f(const std::string& name, const glm::mat4& mat) const;
 	void SetUniformMat3f(const std::string& name, const glm::mat3& mat) const;
+	void ActivateTexture(const unsigned int id);
 	int GetUniformLocation(const std::string& name) const;
 	inline uint32_t GetShaderId() const { return m_rendererId; };
 private:

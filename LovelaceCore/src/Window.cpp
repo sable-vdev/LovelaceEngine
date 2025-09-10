@@ -31,6 +31,7 @@ bool Window::Initialize()
         Logger::Log(ERROR, "Failed to initialize GLFW");
         return false;
     }
+    Logger::Log(INFO, "Initialized GLFW");
     GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
     const GLFWvidmode* vidmode = glfwGetVideoMode(primaryMonitor);
 
@@ -52,7 +53,7 @@ bool Window::Initialize()
     glfwMakeContextCurrent(m_window);
     glfwSetWindowUserPointer(m_window, this);
     glfwSetFramebufferSizeCallback(m_window, FrameBufferSizeCallback);
-
+    
     int width, height, nrChannels;
 
     unsigned char* icon = stbi_load("../LovelaceCore/resources/Ada_icon.png", &width, &height, &nrChannels, 0);
@@ -71,18 +72,17 @@ bool Window::Initialize()
     glfwSetWindowIcon(m_window, 1, &image);
     stbi_image_free(icon);
 
-
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
-        return -1;
+        return false;
     }
 
     if (m_vsync) glfwSwapInterval(1);
     else glfwSwapInterval(0);
 
-    //glEnable(GL_CULL_FACE);
-    //glCullFace(GL_BACK);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
 
     IMGUI_CHECKVERSION();

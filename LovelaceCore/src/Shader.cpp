@@ -2,7 +2,7 @@
 #include <iostream>
 #include "Shader.hpp"
 #include "Logger.hpp"
-#include "stb_image/stb_image.h"
+
 
 Shader::Shader() : m_rendererId(glCreateProgram())
 {
@@ -82,7 +82,7 @@ void Shader::AddTexture(const std::string& path, const int id)
 {
 	uint32_t texture;
 	glGenTextures(1, &texture);
-	glActiveTexture(GL_TEXTURE0 + m_amountOfTextures);
+	glActiveTexture(GL_TEXTURE0 + id);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -94,8 +94,8 @@ void Shader::AddTexture(const std::string& path, const int id)
 	unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
 
 	uint32_t colorFormat = 0;
-	if (path.ends_with(".png")) colorFormat = GL_RGBA;
-	else if (path.ends_with(".jpg")) colorFormat = GL_RGB;
+	if (nrChannels == 4) colorFormat = GL_RGBA;
+	else if (nrChannels == 3) colorFormat = GL_RGB;
 	else Logger::Log(ERROR, "Did not provide a supported texture format");
 
 	if (data)
@@ -114,7 +114,11 @@ void Shader::AddTexture(const std::string& path, const int id)
 
 void Shader::SetUniform1i(const std::string& name, int x) const
 {
-	glUniform1i(GetUniformLocation(name), x);
+	if (int i = GetUniformLocation(name) != -1)
+	{
+		glUniform1i(i, x);
+	}
+	else Logger::Log(WARNING, "Couldn't find uniform location");
 }
 
 void Shader::SetUniform1f(const std::string& name, float x) const
@@ -155,6 +159,11 @@ void Shader::SetUniformMat3f(const std::string& name, const glm::mat3& mat) cons
 int Shader::GetUniformLocation(const std::string& name) const
 {
 	return glGetUniformLocation(m_rendererId, name.c_str());
+}
+
+void Shader::ActivateTexture(const unsigned int id)
+{
+	glActiveTexture(GL_TEXTURE0 + id);
 }
 
 bool Shader::ReadFile(const std::string& source, std::string& out)
