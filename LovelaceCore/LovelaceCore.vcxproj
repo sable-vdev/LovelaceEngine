@@ -54,6 +54,7 @@
     <ClInclude Include="dependencies\include\imgui\imstb_rectpack.h" />
     <ClInclude Include="dependencies\include\imgui\imstb_textedit.h" />
     <ClInclude Include="dependencies\include\imgui\imstb_truetype.h" />
+    <ClInclude Include="src\lovelacetypes.hpp" />
     <ClInclude Include="src\Material.hpp" />
     <ClInclude Include="src\Mesh.hpp" />
     <ClInclude Include="src\Model.hpp" />

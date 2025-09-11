@@ -1,12 +1,12 @@
 #include "Model.hpp"
 
-unsigned int TextureFromFile(const char* path, const std::string& directory, bool gamma = false)
+I32U TextureFromFile(std::string& path, const std::string& directory, bool gamma = false)
 {
-	std::string filename = std::string(path);
-	filename = directory + "/" + filename;
+	std::string filename = directory + "/" + path;
 
-	unsigned int textureID;
+	I32U textureID;
 	glGenTextures(1, &textureID);
+
 	stbi_set_flip_vertically_on_load(true);
 	int width, height, nrComponents;
 	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
@@ -33,10 +33,10 @@ unsigned int TextureFromFile(const char* path, const std::string& directory, boo
 	}
 	else
 	{
-		std::cout << "Texture failed to load at path: " << path << std::endl;
+		Logger::Log(ERROR, "Texture failed to load at path: " + path);
 		stbi_image_free(data);
 	}
-
+	Logger::Log(INFO, "Created texture with id: " + std::to_string(textureID));
 	return textureID;
 }
 
@@ -47,6 +47,8 @@ Model::Model(std::string path)
 
 void Model::LoadModel(std::string path)
 {
+	//m_meshes.clear();
+	//m_texturesLoaded.clear();
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(path, 
 		aiProcess_Triangulate |           // Convert all primitives to triangles
@@ -65,7 +67,7 @@ void Model::LoadModel(std::string path)
 	}
 
 	m_directory = path.substr(0, path.find_last_of('/'));
-
+	m_meshes.reserve(scene->mRootNode->mNumChildren);
 	ProcessNode(scene->mRootNode, scene);
 }
 
@@ -73,8 +75,7 @@ void Model::ProcessNode(aiNode* node, const aiScene* scene)
 {
 	for (I32U i = 0; i < node->mNumMeshes; i++)
 	{
-		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		m_meshes.push_back(ProcessMesh(mesh, scene));
+		m_meshes.push_back(ProcessMesh(scene->mMeshes[node->mMeshes[i]], scene));
 	}
 
 	for (I32U i = 0; i < node->mNumChildren; i++)
@@ -86,47 +87,39 @@ void Model::ProcessNode(aiNode* node, const aiScene* scene)
 Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 {
 	vector<Vertex> vertices;
+	vertices.reserve(mesh->mNumVertices);
 	vector<I32U> indices;
 	vector<Texture> textures;
 
 	for (I32U i = 0; i < mesh->mNumVertices; i++)
 	{
 		Vertex vertex;
-		glm::vec3 vec3(0.0f);
-
-		vec3.x = mesh->mVertices[i].x;
-		vec3.y = mesh->mVertices[i].y;
-		vec3.z = mesh->mVertices[i].z;
-
-		vertex.position = vec3;
+		vertex.position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
 
 		if (mesh->HasNormals())
 		{
-			vec3.x = mesh->mNormals[i].x;
-			vec3.y = mesh->mNormals[i].y;
-			vec3.z = mesh->mNormals[i].z;
-			vertex.normal = vec3;
+			vertex.normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
 		}
 
-		glm::vec2 vec2(0.0f);
 		if (mesh->mTextureCoords[0])
 		{
-			vec2.x = mesh->mTextureCoords[0][i].x;
-			vec2.y = mesh->mTextureCoords[0][i].y;
-			vertex.texCoords = vec2;
+			vertex.texCoords = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
 		}
-		else vertex.texCoords = vec2;
 
 		vertices.push_back(vertex);
 	}
 
+	I32U numIndices = 0;
 	for (I32U i = 0; i < mesh->mNumFaces; i++)
 	{
-		aiFace face = mesh->mFaces[i];
-		for (I32U j = 0; j < face.mNumIndices; j++)
-		{
-			indices.push_back(face.mIndices[j]);
-		}
+		numIndices += mesh->mFaces[i].mNumIndices;
+	}
+
+	indices.reserve(numIndices);
+	for (I32U i = 0; i < mesh->mNumFaces; i++)
+	{
+		aiFace& face = mesh->mFaces[i];
+		indices.insert(indices.end(), face.mIndices, face.mIndices + face.mNumIndices);
 	}
 
 	aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
@@ -141,28 +134,27 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 vector<Texture> Model::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
 {
 	vector<Texture> textures;
+	textures.reserve(1);
 	for (I32U i = 0; i < mat->GetTextureCount(type); i++)
 	{
-		bool IsLoaded = false;
 		aiString str;
+		std::string path;
 		mat->GetTexture(type, i, &str);
-		for (I32U j = 0; j < m_texturesLoaded.size(); j++)
+		path = str.C_Str();
+
+		auto it = m_texturesLoaded.find(path);
+		if (it != m_texturesLoaded.end())
 		{
-			if (std::strcmp(m_texturesLoaded[j].path.data(), str.C_Str()) == 0)
-			{
-				textures.push_back(m_texturesLoaded[j]);
-				IsLoaded = true;
-				break;
-			}
+			textures.push_back(it->second);
 		}
-		if (!IsLoaded)
+		else
 		{
 			Texture texture;
-			texture.id = TextureFromFile(str.C_Str(), m_directory);
+			texture.id = TextureFromFile(path, m_directory);
 			texture.type = typeName;
-			texture.path = str.C_Str();
-			textures.push_back(texture);
-			m_texturesLoaded.push_back(texture);
+			texture.path = path;
+			m_texturesLoaded[path] = texture;
+			textures.emplace_back(std::move(texture));
 		}
 	}
 	return textures;

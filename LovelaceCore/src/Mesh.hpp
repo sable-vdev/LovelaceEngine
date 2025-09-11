@@ -4,10 +4,11 @@
 #include "Shader.hpp"
 #include "Buffer.hpp"
 #include "VertexArrayObject.hpp"
+#include "lovelacetypes.hpp"
 
 template <typename T> 
 using vector = std::vector<T>;
-typedef uint32_t I32U; // stole the naming from game engine architecture book
+//typedef uint32_t I32U; // stole the naming from game engine architecture book
 
 struct Vertex
 {
@@ -20,14 +21,16 @@ struct Texture
 {
 	std::string type;
 	std::string path;
-	I32U id;
+	I32U id = 0;
+
+	inline Texture() {};
+	inline Texture(I32U id, const std::string& type, const std::string& path) : id(id), type(type), path(path) {}
 };
 
 class Mesh
 {
 public:
-	Mesh(vector<Vertex>& vertices, vector<I32U>& indices, vector<Texture>& textures);
-	//~Mesh();
+	Mesh(const vector<Vertex>& vertices, const vector<I32U>& indices, const vector<Texture>& textures);
 	void Draw(Shader& shader);
 private:
 	void SetupMesh();
@@ -37,7 +40,4 @@ public:
 	vector<Texture> textures;
 private:
 	I32U m_vao = 0, m_vbo = 0, m_ebo = 0;
-	VAO m_vaoB;
-	Buffer m_vboB;
-	Buffer m_eboB;
 };

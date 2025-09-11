@@ -16,7 +16,7 @@ void Shader::Initialize(const uint32_t shaderType, const std::string& source, co
 	std::string out;
 	ReadFile(source, out);
 
-	const char* p =  out.c_str();
+	const char* p = out.c_str();
 
 	int length = static_cast<int>(strlen(out.c_str()));
 
@@ -107,58 +107,75 @@ void Shader::AddTexture(const std::string& path, const int id)
 	{
 		Logger::Log(ERROR, "Failed to load texture");
 	}
-	
+
 	stbi_image_free(data);
 	m_amountOfTextures++;
 }
 
-void Shader::SetUniform1i(const std::string& name, int x) const
+void Shader::SetUniform1i(const std::string& name, int x)
+{
+	if (GetUniformLocation(name) != -1)
+	{
+		glUniform1i(m_uniformCache[name], x);
+	}
+}
+
+void Shader::SetUniform1f(const std::string& name, float x)
 {
 	if (int i = GetUniformLocation(name) != -1)
 	{
-		glUniform1i(i, x);
+		glUniform1f(i, x);
 	}
-	else Logger::Log(WARNING, "Couldn't find uniform location");
 }
 
-void Shader::SetUniform1f(const std::string& name, float x) const
+void Shader::SetUniform4f(const std::string& name, float x, float y, float z, float w)
 {
-	glUniform1f(GetUniformLocation(name), x);
+	if (int i = GetUniformLocation(name) != -1)
+	{
+		glUniform4f(i, x, y, z, w);
+	}
 }
 
-void Shader::SetUniform4f(const std::string& name, float x, float y, float z, float w) const
+void Shader::SetUniform4f(const std::string& name, glm::vec4 vector)
 {
-	glUniform4f(GetUniformLocation(name), x, y, z, w);
+	if (int i = GetUniformLocation(name) != -1)
+	{
+		glUniform4f(i, vector.x, vector.y, vector.z, vector.w);
+	}
 }
 
-void Shader::SetUniform4f(const std::string& name, glm::vec4 vector) const
-{
-	glUniform4f(GetUniformLocation(name), vector.x, vector.y, vector.z, vector.w);
-}
-
-void Shader::SetUniform3f(const std::string& name, float x, float y, float z) const
+void Shader::SetUniform3f(const std::string& name, float x, float y, float z)
 {
 	glUniform3f(GetUniformLocation(name), x, y, z);
 }
 
-void Shader::SetUniform3f(const std::string& name, glm::vec3 vector) const
+void Shader::SetUniform3f(const std::string& name, glm::vec3 vector) 
 {
 	glUniform3f(GetUniformLocation(name), vector.x, vector.y, vector.z);
 }
 
-void Shader::SetUniformMat4f(const std::string& name, const glm::mat4& mat) const
+void Shader::SetUniformMat4f(const std::string& name, const glm::mat4& mat) 
 {
 	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &mat[0][0]);
 }
 
-void Shader::SetUniformMat3f(const std::string& name, const glm::mat3& mat) const
+void Shader::SetUniformMat3f(const std::string& name, const glm::mat3& mat)
 {
 	glUniformMatrix3fv(GetUniformLocation(name), 1, GL_FALSE, &mat[0][0]);
 }
 
-int Shader::GetUniformLocation(const std::string& name) const
+int Shader::GetUniformLocation(const std::string& name)
 {
-	return glGetUniformLocation(m_rendererId, name.c_str());
+	if (m_uniformCache.find(name) != m_uniformCache.end()) return m_uniformCache[name];
+	int location = glGetUniformLocation(m_rendererId, name.c_str());
+
+	if (location != -1)
+	{
+		m_uniformCache[name] = location;
+	}
+	//else Logger::Log(WARNING, "Couldn't find uniform location of uniform: " + name);
+	
+	return location;
 }
 
 void Shader::ActivateTexture(const unsigned int id)

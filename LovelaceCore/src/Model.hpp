@@ -4,6 +4,8 @@
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 #include "Logger.hpp"
+#include <map>
+#include <unordered_map>
 
 class Model
 {
@@ -16,7 +18,7 @@ private:
 	Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
 	vector<Texture> LoadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
 private:
-	vector<Texture> m_texturesLoaded;
+	std::unordered_map<std::string, Texture> m_texturesLoaded;
 	vector<Mesh> m_meshes;
 	std::string m_directory;
 };
