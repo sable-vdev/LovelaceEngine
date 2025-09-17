@@ -1,5 +1,12 @@
 #include "Model.hpp"
 
+static I32 creationCalls = 0;
+
+void* operator new(size_t t)
+{
+	creationCalls++;
+	return malloc(t);
+}
 I32U TextureFromFile(std::string& path, const std::string& directory, bool gamma = false)
 {
 	std::string filename = directory + "/" + path;
